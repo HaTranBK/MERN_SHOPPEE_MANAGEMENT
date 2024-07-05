@@ -62,9 +62,13 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.comparePassword = async function (enteredPassword) {
-  console.log("bạn đang vào compare password! @@@65");
+  console.log(
+    "bạn đang vào compare password! @@@65 and hashed password: ",
+    enteredPassword,
+    this.password
+  );
   //this.password refer to the hashed password.
-  return await userSchema.compare(enteredPassword, this.password);
+  return await bcrypt.compare(enteredPassword, this.password);
   //return promise that resolve to true if the passwords match and false if they dont match.
 };
 
