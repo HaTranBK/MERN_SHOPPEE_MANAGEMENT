@@ -24,12 +24,14 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
-    minLength: [11, "Phone number must contain exact 11 digits !"],
-    maxLength: [11, "Phone number must contain exact 11 digits !"],
+    minLength: [10, "Phone number must contain exact 11 digits !"],
+    maxLength: [10, "Phone number must contain exact 11 digits !"],
   },
-  birthday: {
-    type: Date,
+  account: {
+    type: String,
     required: true,
+    required: true,
+    minLength: [5, "Account name must contain at least 5 characters !"],
   },
   gender: {
     type: String,
@@ -74,7 +76,7 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
 
 userSchema.methods.generateJsonWebToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.COOKIE_EXPIRES,
+    expiresIn: process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000,
   });
 };
 export const UserModel = mongoose.model("users", userSchema);

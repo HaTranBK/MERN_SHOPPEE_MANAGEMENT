@@ -1,0 +1,46 @@
+.parentForm {
+  background-color: orangered;
+}
+.parentForm .signUp_text .icon_shoppe {
+  font-size: 180px;
+}
+.parentForm .form-container {
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+.parentForm .form-container .form_title h1 {
+  font-size: 28px;
+}
+.parentForm .form-container form {
+  padding: 10px 0px;
+}
+.parentForm .form-container form .password_form {
+  position: relative;
+}
+.parentForm .form-container form .password_form .exposed_password {
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  color: rgb(185, 182, 177);
+}
+
+footer {
+  font-size: 14px;
+}
+footer .item .list li a {
+  display: inline-block;
+  padding-bottom: 9px;
+  font-size: 13px;
+  transition: all 0.3s;
+}
+footer .item .list li a:hover {
+  color: orangered;
+}
+footer .item_pay img {
+  width: 100%;
+  padding: 12px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+footer .download_item .download_detailed_item img {
+  padding: 3px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}/*# sourceMappingURL=app.css.map */

@@ -23,7 +23,7 @@ app.use(
   cors({
     origin: [process.env.FRONTEND_URL, process.env.DASHBOARD_URL],
     method: ["POST", "PUT", "DELETE", "GET"],
-    credentials: true,
+    credentials: true, //allow cookie be sent with request.
   })
 );
 
@@ -42,6 +42,7 @@ app.use(
 );
 //NẾU CÓ LỖI THÌ SẼ ĐẾN ERRORMIDDLEWARE PHÍA DƯỚI ĐỂ XỬ LÝ
 app.use("/api/v1/user", userRouter);
+
 //connecting to database MongooDB
 dbConnection();
 
