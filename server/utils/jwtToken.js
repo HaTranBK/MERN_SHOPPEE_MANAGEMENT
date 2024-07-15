@@ -1,5 +1,6 @@
 export const generateToke = (user, message, statusCode, res) => {
   const token = user.generateJsonWebToken();
+  console.log("token: ", token);
   //Lưu ý là cookieName nếu giống nhau thì cái cũ sẽ bị ghi đè.
   const cookieName = user.role === "Admin" ? "adminToken" : "userToken";
   res

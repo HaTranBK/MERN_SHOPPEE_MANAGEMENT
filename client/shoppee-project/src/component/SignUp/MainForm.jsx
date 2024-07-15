@@ -12,6 +12,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+// import debounce from "lodash.debounce";
 import {
   validateAccount,
   validateEmail,
@@ -22,6 +25,7 @@ import {
   validatePhone,
   validateRole,
 } from "../../validate/detailValidate";
+import { Toaster, toast } from "sonner";
 import { updateError, userState } from "../../redux/userReducer";
 // import { init } from "create-react-app/createReactApp";
 
@@ -42,9 +46,44 @@ const MainForm = () => {
   const [user, setUser] = useState(initialUser);
   const dispatch = useDispatch();
   const { error } = useSelector(userState);
+  const [disabledButton, setDisableButton] = useState(true);
+  const navigate = useNavigate();
+  const notifyError = (message) => toast.error(`🦄 ${message}`);
+  const notifySuccess = (message) => toast.success(`🦄 ${message}`);
+  console.log("re render!");
   useEffect(() => {
-    console.log("user: ", user);
-  }, [user]);
+    const {
+      firstname,
+      lastname,
+      email,
+      phone,
+      account,
+      gender,
+      role,
+      password,
+    } = error;
+    if (
+      !firstname &&
+      !lastname &&
+      !email &&
+      !phone &&
+      !account &&
+      !gender &&
+      !role &&
+      !password &&
+      user.firstname &&
+      user.lastname &&
+      user.email &&
+      user.phone &&
+      user.account &&
+      user.gender &&
+      user.role
+    ) {
+      setDisableButton(false);
+    } else {
+      setDisableButton(true);
+    }
+  }, [error]);
 
   function debounce(func, delay) {
     let debounceTimer;
@@ -166,18 +205,24 @@ const MainForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const respone = await axios.post(
+      const response = await axios.post(
         "http://localhost:8000/api/v1/user/signup",
         user
       );
-      console.log("respone: ", respone);
-      if (respone.status !== 200) {
+      console.log("respone: ", response);
+      if (response.status !== 200) {
         console.log("lỗi khác 200");
       }
-      console.log("Đăng kí thành công !", respone);
+      notifySuccess(response.data.message);
       setUser(initialUser);
+      setDisableButton(true);
+      setTimeout(() => {
+        navigate("/pre-process/sign/signin");
+      }, 2500);
+      // return () => clearTimeout(timer);
     } catch (error) {
-      console.log("lỗi ở submit: ", error);
+      notifyError(error.response.data.message);
+      console.log("lỗi ở submit: ", error.response.data.message);
     }
   };
 
@@ -260,7 +305,10 @@ const MainForm = () => {
             />
 
             <a onClick={handleShowPassword}>
-              <FontAwesomeIcon icon={faEye} className="exposed_password" />
+              <FontAwesomeIcon
+                icon={!showPassword ? faEyeSlash : faEye}
+                className="exposed_password"
+              />
             </a>
           </div>
           <p className="text-red-500">{error.password}</p>
@@ -307,8 +355,14 @@ const MainForm = () => {
         </FormControl>
       </form>
       <div className="flex justify-center">
+        <Toaster richColors position="top-right" />
         <button
-          className="bg-green-500 rounded-md text-white px-4 py-2 my-3 hover:bg-opacity-80"
+          className={`bg-green-500 rounded-md text-white px-4 py-2 my-3 ${
+            disabledButton
+              ? "bg-opacity-50 cursor-not-allowed"
+              : "hover:bg-opacity-80"
+          }`}
+          disabled={disabledButton}
           onClick={handleSubmit}
         >
           Complete

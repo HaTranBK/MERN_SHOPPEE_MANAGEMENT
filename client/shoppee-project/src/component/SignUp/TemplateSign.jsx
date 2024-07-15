@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
-import MainForm from "./MainForm";
-const SignUp = () => {
+
+import { Outlet } from "react-router-dom";
+const TemplateSign = () => {
   return (
     <div className="parentForm py-24 relative">
       <div className="container w-3/4 mx-auto grid grid-cols-4 gap-4 ">
@@ -19,10 +20,10 @@ const SignUp = () => {
             Nền tảng thương mại điện tử <br /> yêu thích ở Đông Nam Á & Đài Loan
           </span>
         </div>
-        <MainForm />
+        <Outlet />
       </div>
     </div>
   );
 };
 
-export default SignUp;
+export default TemplateSign;

@@ -43,4 +43,39 @@ footer .item_pay img {
 footer .download_item .download_detailed_item img {
   padding: 3px;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.signInContainer .signin_title {
+  position: relative;
+}
+.signInContainer .signin_title::before {
+  content: "";
+  height: 2px;
+  width: 100%;
+  border-bottom: 2px solid #ef4444;
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+}
+.signInContainer form {
+  position: relative;
+}
+.signInContainer form .password_container {
+  position: relative;
+}
+.signInContainer form .password_container .show_password {
+  position: absolute;
+  top: 35%;
+  right: 10px;
+  color: rgb(185, 182, 177);
+}
+.signInContainer form::before {
+  content: "";
+  position: absolute;
+  bottom: -75%;
+  border-bottom: 1px solid rgb(185, 182, 177);
+  width: 70%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }/*# sourceMappingURL=app.css.map */

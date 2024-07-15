@@ -39,7 +39,7 @@ export const UserRegister = CatchAsyncError(async (req, res, next) => {
     return new Promise((res, rej) => {
       rej({
         success: false,
-        message: "Lỗi tạo user!",
+        message: error.message,
       });
     });
   }
@@ -52,15 +52,11 @@ export const UserRegister = CatchAsyncError(async (req, res, next) => {
 });
 
 export const Login = CatchAsyncError(async (req, res, next) => {
-  const { email, confpassword, password, role } = req.body;
-  if (!email || !confpassword || !role || !password) {
+  const { email, password, role } = req.body;
+  if (!email || !role || !password) {
     return next(new ErrorHandler("Please Provide All Details !", 400));
   }
-  if (password !== confpassword) {
-    return next(
-      new ErrorHandler("Password and confirm password dont match!", 400)
-    );
-  }
+
   //select("+password") dùng để lấy luôn cả field password mà được setup là select:false
   const user = await UserModel.findOne({ email }).select("+password");
   //vì user được tạo ra từ UserModel cho nên là user là 1 instance => có thể gọi những hàm được định nghĩa thêm của UserModel.

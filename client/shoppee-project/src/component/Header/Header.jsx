@@ -4,6 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 
 const Header = () => {
+  const url = window.location.href; // Get the full URL
+  const pathname = window.location.pathname; // Get the pathname
+  const last_path = pathname.split("/").filter(Boolean);
+  console.log("last_path: ", last_path);
   return (
     <header className="py-5">
       <div className="container flex justify-between items-center w-3/4 mx-auto">
@@ -20,7 +24,7 @@ const Header = () => {
             </span>
           </a>
           <span className="text-2xl text-black-400 text-semibold pt-2">
-            Đăng kí
+            {last_path[2] === "signin" ? "Đăng Nhập" : "Đăng Ký"}
           </span>
         </div>
         <div>

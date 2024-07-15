@@ -67,3 +67,41 @@ footer {
     }
   }
 }
+
+//-------------SIGNIN---------------
+.signInContainer {
+  .signin_title {
+    position: relative;
+    &::before {
+      content: "";
+      height: 2px;
+      width: 100%;
+      border-bottom: 2px solid #ef4444;
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+    }
+  }
+  form {
+    position: relative;
+    .password_container {
+      position: relative;
+      .show_password {
+        position: absolute;
+        top: 35%;
+        right: 10px;
+        color: rgb(185, 182, 177);
+      }
+    }
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: -75%;
+      border-bottom: 1px solid rgb(185, 182, 177);
+      width: 70%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}

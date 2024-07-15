@@ -5,8 +5,8 @@ const checkSpace = (value) => {
 export const validateFirstName = (value) => {
   const res = checkSpace(value);
   if (!res) {
-    if (value.length < 2) {
-      return "First name must be at least 2 characters long";
+    if (value.length < 3) {
+      return "First name must be at least 3 characters long";
     }
     return "";
   }
@@ -16,8 +16,8 @@ export const validateFirstName = (value) => {
 export const validateLastName = (value) => {
   const res = checkSpace(value);
   if (!res) {
-    if (value.length < 2) {
-      return "Last name must be at least 2 characters long";
+    if (value.length < 3) {
+      return "Last name must be at least 3 characters long";
     }
     return "";
   }
@@ -49,7 +49,11 @@ export const validatePhone = (value) => {
 
 export const validateAccount = (value) => {
   const res = checkSpace(value);
-  if (!res) return "";
+  if (!res) {
+    if (value.length < 5)
+      return "Account name must contain at least 5 characters !";
+    return "";
+  }
   return res;
 };
 
@@ -60,8 +64,8 @@ export const validatePassword = (value) => {
     const passwordRegex = /^[a-zA-Z0-9]+$/;
     if (value[0] === " " || value[value.length - 1] === " ")
       return "Dont add space keyword at start and end of string !";
-    if (length < 6)
-      return "Password must have more than or equal 6 characters !";
+    if (length < 8)
+      return "Password must have more than or equal 8 characters !";
     return passwordRegex.test(value)
       ? ""
       : "Password must contain both alphabet and number !";
