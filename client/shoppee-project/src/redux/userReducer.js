@@ -1,7 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const initialState = {
-  user: [],
+  user: {},
   cart: [],
   error: {
     firstname: "",
@@ -13,8 +14,27 @@ const initialState = {
     role: "",
     gender: "",
   },
+  islogin: false,
 };
 
+export const authenticateAccount = createAsyncThunk(
+  "user/authenticateAccount",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/v1/user/user/me",
+        {
+          withCredentials: true,
+        }
+      );
+      updateIsLogIn();
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 const userReducer = createSlice({
   name: "user",
   initialState,
@@ -29,8 +49,33 @@ const userReducer = createSlice({
         [name]: value,
       };
     },
+    updateUserInformation: function (state, actions) {
+      state.user = actions.payload;
+      state.islogin = true;
+    },
+    updateIsLogIn: function (state) {
+      state.islogin = true;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(authenticateAccount.fulfilled, (state, action) => {
+        state.islogin = true;
+        state.user = action.payload.user;
+        state.error = null;
+      })
+      .addCase(authenticateAccount.rejected, (state, action) => {
+        state.islogin = false;
+        state.user = null;
+        state.error = action.payload;
+      });
   },
 });
-export const userState = (state) => state.user;
-export const { deleteProduct, updateError } = userReducer.actions;
+export const userState = (state) => state.user_;
+export const {
+  deleteProduct,
+  updateError,
+  updateUserInformation,
+  updateIsLogIn,
+} = userReducer.actions;
 export default userReducer.reducer;

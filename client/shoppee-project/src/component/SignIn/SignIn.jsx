@@ -6,14 +6,18 @@ import { Radio } from "antd";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateUserInformation } from "../../redux/userReducer";
 const SignIn = () => {
   const [user, setUser] = useState({
     email: "",
     password: "",
     role: "",
   });
-
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     console.log("user: ", user);
   }, [user]);
@@ -35,15 +39,21 @@ const SignIn = () => {
     try {
       const response = await axios.post(
         "http://localhost:8000/api/v1/user/login",
-        user
+        user,
+        { withCredentials: true } //dùng để gửi kèm theo cookie hoặc nhận cookie trả về từ server
       );
       console.log("response from signIn: ", response);
       notifySuccess(response.data.message);
-      // setUser({
-      //   email: "",
-      //   password: "",
-      //   role: "",
-      // });
+      setUser({
+        email: "",
+        password: "",
+        role: "",
+      });
+      const role = response.data.user.role;
+      const localTokenName = role === "User" ? "userToken" : "adminToken";
+      dispatch(updateUserInformation(response.data.user));
+      localStorage.setItem(localTokenName, response.data.token);
+      setTimeout(() => navigate("/"), 2000);
     } catch (error) {
       console.log(
         "error from post data from login: ",

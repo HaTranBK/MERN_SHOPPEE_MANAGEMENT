@@ -5,11 +5,16 @@ import SignInUpTemplate from "./template/SignInUpTemplate/SignInUpTemplate";
 import SignIn from "./component/SignIn/SignIn";
 import TemplateSign from "./component/SignUp/TemplateSign";
 import MainForm from "./component/SignUp/MainForm";
-import HomeHeader from "./component/Header/HomeHeader";
+import HomeTemplate from "./template/HomeTemplate/HomeTemplate";
+import BodyHome from "./component/BodyHome/BodyHome";
+import CategoryBasedBody from "./component/Categories/CategoryBasedBody";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomeHeader />} />
+      <Route path="/" element={<HomeTemplate />}>
+        <Route index element={<BodyHome />} />
+        <Route path="/:categoryname" element={<CategoryBasedBody />} />
+      </Route>
       <Route path="/pre-process" element={<SignInUpTemplate />}>
         <Route path="sign" element={<TemplateSign />}>
           <Route path="signup" element={<MainForm />} />

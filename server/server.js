@@ -6,6 +6,7 @@ import fileUpload from "express-fileupload";
 import { dbConnection } from "./dataBase/dataBaseConnection.js";
 import cloudinary from "cloudinary";
 import userRouter from "./router/userRouter.js";
+import productRouter from "./router/productsRouter.js";
 import { errorMiddleWare } from "./MiddleWares/ErrorMiddleWare.js";
 dotenv.config({ path: "./config/cfg.env" });
 
@@ -42,7 +43,7 @@ app.use(
 );
 //NẾU CÓ LỖI THÌ SẼ ĐẾN ERRORMIDDLEWARE PHÍA DƯỚI ĐỂ XỬ LÝ
 app.use("/api/v1/user", userRouter);
-
+app.use("/api/v1/products", productRouter);
 //connecting to database MongooDB
 dbConnection();
 

@@ -7,6 +7,7 @@ export const generateToke = (user, message, statusCode, res) => {
     .status(statusCode)
     .cookie(cookieName, token, {
       //expire thì xét dạng ngày tháng, còn maxAge thì xét dạng giây
+
       // httpOnly: true, //dùng để chặn kiểu attack XSS. Tức là chỉ có request HTTP mới lấy được cookie, nếu xét bằng false thì người ta có thể dùng devtool rồi gõ document.cookie sẽ cho ra cookie luôn
       expires: new Date(
         Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000
@@ -18,4 +19,8 @@ export const generateToke = (user, message, statusCode, res) => {
       user,
       token,
     });
+  console.log(
+    "token999999: ",
+    new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000)
+  );
 };
