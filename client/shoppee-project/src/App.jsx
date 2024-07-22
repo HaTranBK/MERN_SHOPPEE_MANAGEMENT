@@ -8,12 +8,13 @@ import MainForm from "./component/SignUp/MainForm";
 import HomeTemplate from "./template/HomeTemplate/HomeTemplate";
 import BodyHome from "./component/BodyHome/BodyHome";
 import CategoryBasedBody from "./component/Categories/CategoryBasedBody";
+import InforPageBody from "./component/InforPage/InforPageBody";
 function App() {
   return (
     <Routes>
       <Route path="/" element={<HomeTemplate />}>
         <Route index element={<BodyHome />} />
-        <Route path="/:categoryname" element={<CategoryBasedBody />} />
+        <Route path="/:pathname" element={<CategoryBasedBody />} />
       </Route>
       <Route path="/pre-process" element={<SignInUpTemplate />}>
         <Route path="sign" element={<TemplateSign />}>

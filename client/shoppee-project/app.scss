@@ -189,3 +189,12 @@ footer {
     }
   }
 }
+
+//------------ITEMINFOR----------------
+.btn_cart {
+  background-color: #ffeee8;
+  border: 1px solid orangered;
+  &:hover {
+    background-color: #ffeee8ad;
+  }
+}

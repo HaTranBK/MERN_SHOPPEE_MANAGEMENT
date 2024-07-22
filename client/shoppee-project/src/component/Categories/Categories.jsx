@@ -43,8 +43,9 @@ const Categories = () => {
     fetchData();
   }, []);
 
+  console.log("products_ : ", products);
   const renderCategories = () => {
-    console.log("banj ddang vao renderCategories");
+    console.log("banj ddang vao renderCategories: ", products);
     const categoryArr = [
       "Smartphone",
       "Printer",
@@ -53,7 +54,7 @@ const Categories = () => {
       "Speaker",
       "Camera",
     ];
-    return products?.map((item, index) => {
+    return products.map((item, index) => {
       let src_ = { img: Smartphone };
       switch (item.category) {
         case "Smartphone": {

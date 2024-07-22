@@ -1,38 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useSearchParams } from "react-router-dom";
+import { Carousel } from "antd";
+import { Link } from "react-router-dom";
 import DetailItem from "../Item/DetailItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+
 const CategoryBasedProducts = () => {
-  const { categoryname } = useParams();
-  console.log("category name: ", categoryname);
+  const { pathname } = useParams();
+  console.log("category name: ", pathname);
+  const [order, setOrder] = useState("Giá");
   const [categoryProducts, setCategoryProducts] = useState({});
   const [searchParam, setSearchParam] = useSearchParams();
-  const [order, setOrder] = useState("Giá");
   const queryParamList = Object.fromEntries([...searchParam]);
   console.log("queryParamList: ", queryParamList);
 
   useEffect(() => {
-    const CategoriedData = async () => {
-      try {
-        const Categoriedata = await axios.get(
-          // http://localhost:8000/api/v1/user/login
-          "http://localhost:8000/api/v1/products/get-product",
-          {
-            params: {
-              category: categoryname,
-            },
-            withCredentials: true,
-          }
-        );
-        console.log("categoried data: ", Categoriedata);
-        setCategoryProducts(Categoriedata.data.category[0]);
-      } catch (error) {
-        console.log("error from getting categoried data: ", error);
-      }
-    };
     CategoriedData();
   }, []);
 
@@ -69,26 +54,45 @@ const CategoryBasedProducts = () => {
   const ProcessPriceString = (string) => {
     const original_string = string[1].price.replace(/VND/g, "").trim();
     const finalNumber = parseNumber(original_string);
-    console.log("replace: ", finalNumber);
+    // console.log("replace: ", finalNumber);
     return finalNumber;
   };
 
-  const renderCategoriedProducts = () => {
-    const sortedProducts = [...Object.entries(categoryProducts)].sort(
-      (a, b) => {
-        if (isValidKey(a) && isValidKey(b)) {
-          console.log("ban dang vao if trong sort: ", a[1], b[1]);
-          if (searchParam.get("order") === "asc") {
-            console.log(
-              "ket qua trong giam dan: ",
-              ProcessPriceString(a),
-              ProcessPriceString(b)
-            );
-            return ProcessPriceString(a) - ProcessPriceString(b);
-          } else return ProcessPriceString(b) - ProcessPriceString(a);
+  const CategoriedData = async () => {
+    try {
+      const Categoriedata = await axios.get(
+        "http://localhost:8000/api/v1/products/get-category",
+        {
+          params: {
+            category: pathname,
+          },
+          withCredentials: true,
         }
+      );
+      console.log("categoried data: ", Categoriedata);
+      setCategoryProducts(Categoriedata.data.category[0]);
+    } catch (error) {
+      console.log("error from getting categoried data: ", error);
+    }
+  };
+
+  const renderCategoriedProducts = () => {
+    const OriginalProductsArr = [...Object.entries(categoryProducts)];
+    if (Object.keys(queryParamList).length === 0) {
+      return OriginalProductsArr.map(([key, value]) => {
+        if (key !== "category" && key !== "variants" && key !== "_id") {
+          return <DetailItem productInfo={value} />;
+        }
+      });
+    }
+
+    const sortedProducts = OriginalProductsArr.sort((a, b) => {
+      if (isValidKey(a) && isValidKey(b)) {
+        if (searchParam.get("order") === "asc") {
+          return ProcessPriceString(a) - ProcessPriceString(b);
+        } else return ProcessPriceString(b) - ProcessPriceString(a);
       }
-    );
+    });
     return sortedProducts.map(([key, value]) => {
       if (key !== "category" && key !== "variants" && key !== "_id") {
         return <DetailItem productInfo={value} />;
@@ -98,6 +102,48 @@ const CategoryBasedProducts = () => {
 
   return (
     <div>
+      <div className="container_ mt-5">
+        <Carousel
+          arrows
+          infinite={true}
+          draggable={true}
+          autoplay={true}
+          autoplaySpeed={2000}
+        >
+          <div>
+            <Link>
+              <img
+                src="https://cf.shopee.vn/file/vn-11134258-7r98o-lxc9ugpq8mop90"
+                alt="carousel"
+              />
+            </Link>
+          </div>
+          <div>
+            <Link>
+              <img
+                src="https://cf.shopee.vn/file/vn-11134258-7r98o-lxjcs91nd49n13"
+                alt="carousel"
+              />
+            </Link>
+          </div>
+          <div>
+            <Link>
+              <img
+                src="https://cf.shopee.vn/file/vn-11134258-7r98o-lxc9ugpq8mop90"
+                alt="carousel"
+              />
+            </Link>
+          </div>
+          <div>
+            <Link>
+              <img
+                src="https://cf.shopee.vn/file/vn-50009109-727a24a85a60935da5ccb9008298f681"
+                alt="carousel"
+              />
+            </Link>
+          </div>
+        </Carousel>
+      </div>
       <h3 className="text-2xl text-red-500 text-center my-9">
         {categoryProducts.category}
       </h3>
@@ -152,3 +198,12 @@ const CategoryBasedProducts = () => {
 };
 
 export default CategoryBasedProducts;
+
+//  <Route
+//    path={AdminPaths.OrderBOMSiteDetailRoute}
+//    element={<OrderBOMDetail />}
+//  />;
+
+//  return `${AdminPaths.OrderBOMSiteDetailRoute}?partner_id=${partnerId}${
+//    partnerName ? `&partner_name=${partnerName}` : ""
+//  }&customer_id=${client_id}&site_id=${site_id}&order_id=${orderId}`;

@@ -13,6 +13,7 @@ import {
 } from "../../redux/userReducer";
 import UserInformations from "../UserInformations/UserInformations";
 import axios from "axios";
+import DivideSign from "../../utils/DivideSign";
 
 const HomeHeader = () => {
   const { islogin } = useSelector(userState);
@@ -25,7 +26,7 @@ const HomeHeader = () => {
     return (
       <>
         <Link to="/pre-process/sign/signup">Đăng Ký</Link>
-        <span className="w-1 h-1 text-gray-500">|</span>
+        <DivideSign />
         <Link to="/pre-process/sign/signin">Đăng Nhập</Link>
       </>
     );

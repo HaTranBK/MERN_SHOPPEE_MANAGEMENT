@@ -144,4 +144,11 @@ footer .download_item .download_detailed_item img {
   bottom: -180%;
   left: 0;
   display: none;
+}
+.btn_cart {
+  background-color: #ffeee8;
+  border: 1px solid orangered;
+}
+.btn_cart:hover {
+  background-color: rgba(255, 238, 232, 0.6784313725);
 }/*# sourceMappingURL=app.css.map */

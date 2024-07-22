@@ -4,7 +4,10 @@ import { Link } from "react-router-dom";
 const DetailItem = ({ productInfo }) => {
   const { thumb, price, name } = productInfo;
   return (
-    <Link className="detail_item text-center">
+    <Link
+      className="detail_item text-center"
+      to={`/${name.replace(/ /g, "-")}`}
+    >
       <img src={thumb} alt="anh product" />
       <div className="infor_item px-2 mt-2 pb-3">
         <span className="nameItem text-sm">{name}</span>
