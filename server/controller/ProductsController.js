@@ -8,9 +8,9 @@ const getAllCategory = async () => {
 };
 export const getAllProducts = CatchAsyncError(async (req, res, next) => {
   const productsFromData = await getAllCategory();
-  //   console.log("productsFromData on server side: ", productsFromData);
+  console.log("productsFromData on server side: ", productsFromData);
   if (!productsFromData) {
-    return next(new ErrorHandler("Error from getting all products!", 200));
+    return next(new ErrorHandler("Error from getting all products!", 404));
   }
   res.json({
     success: true,
@@ -24,9 +24,12 @@ export const getSingleProduct = CatchAsyncError(async (req, res, next) => {
   console.log("get single product: ", response);
 
   const AllProducts = await getAllCategory();
+  console.log("AllProducts: ", AllProducts);
   if (AllProducts.length == 0)
-    next(new ErrorHandler("Not Found any product in get single product!", 400));
-  console.log("all products in getsingle product: ", AllProducts);
+    next(
+      new ErrorHandler("Not Found any products in get single product!", 400)
+    );
+  // console.log("all products in getsingle product: ", AllProducts);
 
   res.json({
     success: true,
@@ -37,7 +40,7 @@ export const getSingleProduct = CatchAsyncError(async (req, res, next) => {
 export const getSpecificCategory = CatchAsyncError(async (req, res, next) => {
   console.log("req in getSpecificCategory: ", req.query);
   const category = await productsModel.find({ category: req.query.category });
-  console.log("category on server side: ", category);
+  // console.log("category on server side: ", category);
   if (category.length == 0) {
     console.log("bạn đang vào if không tìm thấy category!");
     return next(new ErrorHandler("Category is not exist!", 400));

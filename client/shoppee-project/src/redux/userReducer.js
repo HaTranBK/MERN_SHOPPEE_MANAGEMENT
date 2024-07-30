@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { setLocalStorageItem } from "../utils/localStorage";
 
 const initialState = {
   user: {},
@@ -52,9 +53,11 @@ const userReducer = createSlice({
     updateUserInformation: function (state, actions) {
       state.user = actions.payload;
       state.islogin = true;
+      state.cart = state.user.cartItems;
+      setLocalStorageItem("user", actions.payload);
     },
-    updateIsLogIn: function (state) {
-      state.islogin = true;
+    updateIsLogIn: function (state, actions) {
+      state.islogin = actions.payload;
     },
   },
   extraReducers: (builder) => {

@@ -2,6 +2,37 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
+const CartSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  thumb: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: String,
+    requied: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+  },
+  updatedAt: {
+    type: Date,
+    required: true,
+  },
+});
 const userSchema = new mongoose.Schema({
   firstname: {
     type: String,
@@ -49,6 +80,13 @@ const userSchema = new mongoose.Schema({
     required: true,
     enum: ["Admin", "User"],
   },
+  cartItems: {
+    type: [CartSchema],
+    required: false,
+  },
+  // orders: {
+  //   type:
+  // }
 });
 
 //userSchema.pre is a hook than run before the user document is save to database.

@@ -8,8 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
-const CategoryBasedProducts = () => {
-  const { pathname } = useParams();
+const CategoryBasedProducts = ({ pathname }) => {
   console.log("category name: ", pathname);
   const [order, setOrder] = useState("Giá");
   const [categoryProducts, setCategoryProducts] = useState({});
@@ -155,9 +154,9 @@ const CategoryBasedProducts = () => {
           </span>
           <FontAwesomeIcon icon={faAngleRight} className="arrow_icon" />
           <div className="sort_options">
-            <ul className="bg-white w-40 ">
+            <ul className="bg-white w-40">
               <li
-                className={`ascending_order px-2 pb-3 hover:cursor-pointer`}
+                className={`ascending_order px-2 pb-3 hover:cursor-pointer pt-2`}
                 onClick={() => handleSortClick(0)}
               >
                 Giá tăng dần
@@ -169,7 +168,7 @@ const CategoryBasedProducts = () => {
                 />
               </li>
               <li
-                className="descending_order px-2 pb-3 hover:cursor-pointer"
+                className="descending_order px-2 pb-3 hover:cursor-pointer "
                 onClick={() => handleSortClick(1)}
               >
                 Giá giảm dần

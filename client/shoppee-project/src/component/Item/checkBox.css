@@ -1,0 +1,67 @@
+/* Hide the browser's default checkbox */
+.custom-checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+.checkbox_container {
+  position: relative;
+}
+
+/* Create a custom checkbox */
+.custom-checkbox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 5px; /* Optional: to make the checkbox rounded */
+}
+.boxShadowTitle {
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+/* On mouse-over, add a grey background color */
+.custom-checkbox-container:hover input ~ .custom-checkbox {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.custom-checkbox-container input:checked ~ .custom-checkbox {
+  background-color: #ee4d2d;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.custom-checkbox:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.custom-checkbox-container input:checked ~ .custom-checkbox:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.custom-checkbox-container .custom-checkbox:after {
+  top: 25%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+.custome-checkbox-disable,
+.input--disable {
+  pointer-events: none;
+}
+.warningDeleteEmpty {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

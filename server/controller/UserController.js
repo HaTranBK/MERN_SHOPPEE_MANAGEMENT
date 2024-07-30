@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { CatchAsyncError } from "../MiddleWares/CatchAsyncError.js";
 import ErrorHandler from "../MiddleWares/ErrorMiddleWare.js";
 import { UserModel } from "../models/userSchema.js";
@@ -73,7 +74,7 @@ export const Login = CatchAsyncError(async (req, res, next) => {
 
   if (role !== user.role) {
     return next(
-      new ErrorHandler("You Dont Have a Permission To Access User Mode", 400)
+      new ErrorHandler(`You Dont Have a Permission To Access ${role} Mode`, 400)
     );
   }
   generateToke(user, "You Logged in Successfully !", 200, res);
@@ -148,8 +149,146 @@ export const getUserDetails = CatchAsyncError(async (req, res, next) => {
 });
 
 export const LogOutAdmin = async (req, res, next) => {
-  res.status(200).cookie("adminToken", "", {
-    httpOnly: true,
-    expires: new Date(Date.now()),
-  });
+  res
+    .status(200)
+    .cookie("adminToken", "", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+    .json({
+      success: true,
+    });
 };
+export const LogOutUser = async (req, res, next) => {
+  console.log("ban vao logout tren server");
+  res
+    .status(200)
+    .cookie("userToken", "", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+    .json({
+      success: true,
+    });
+};
+
+export const AddCartItem = CatchAsyncError(async (req, res, next) => {
+  console.log("param trong add cart item on server: ", req.query);
+  const user = await UserModel.findOne({ _id: req.query._id });
+  if (Object.keys(user).length == 0)
+    return next(new ErrorHandler("User Not Found!", 404));
+  let flag = false;
+  user.cartItems.forEach((cartItem, index) => {
+    if (cartItem.id === req.body.id && cartItem.name === req.body.name) {
+      user.cartItems[index].quantity += 1;
+      flag = true;
+    }
+  });
+  let update = "";
+  if (flag) update = { $set: { cartItems: user.cartItems } };
+  else update = { $push: { cartItems: req.body } };
+  const updatedUser = await UserModel.findOneAndUpdate(
+    { _id: req.query._id },
+    update,
+    { returnDocument: "after" }
+  );
+  if (!updatedUser) {
+    return next(new ErrorHandler("Updating user fail!", 200));
+  }
+  res.json({
+    success: true,
+    message: "Update successfully!",
+    updatedUser,
+  });
+});
+export const getSingleUser = CatchAsyncError(async (req, res, next) => {
+  const user = await UserModel.findOne({ _id: req.query._id });
+  console.log("user in getsingleuser: ", user);
+  if (!user)
+    return next(new ErrorHandler("User not Found in getSingleUSer!", 404));
+  res.json({
+    success: true,
+    message: "Get User successfully!",
+    user,
+  });
+});
+export const updateCartUser = CatchAsyncError(async (req, res, next) => {
+  console.log("ban dang vao update cart user");
+  const { id, type, index, itemId } = req.query;
+  const user = await UserModel.findOne({ _id: id });
+  console.log("present quantity: ", user.cartItems[index].quantity, type);
+
+  let newQuantity =
+    type === "true"
+      ? user.cartItems[index].quantity + 1
+      : user.cartItems[index].quantity - 1;
+  console.log("new quantity: ", newQuantity);
+  const updatedUser = await UserModel.findOneAndUpdate(
+    { _id: id, "cartItems._id": itemId },
+    {
+      $set: {
+        "cartItems.$.quantity": newQuantity,
+        "cartItems.$.updatedAt": new Date(),
+      },
+    },
+    { new: true }
+  );
+  console.log("updated cart user: ", updatedUser);
+  if (updatedUser) {
+    res.json({
+      success: true,
+      message: "Update successfully!",
+      updatedUser,
+    });
+  } else next(new ErrorHandler("Update cart item fail!", 400));
+});
+
+export const DeleteCartItem = CatchAsyncError(async (req, res, next) => {
+  const { userId, itemId } = req.query;
+  const updatedUser = await UserModel.findOneAndUpdate(
+    { _id: userId },
+    {
+      $pull: {
+        cartItems: { _id: itemId },
+      },
+    },
+    { new: true } // Trả về tài liệu đã được cập nhật
+  );
+
+  console.log("updatedUser in delete item: ", updatedUser);
+  if (updatedUser) {
+    res.json({
+      success: true,
+      message: "Item removed successfully!",
+      updatedUser,
+    });
+  } else {
+    return next(new ErrorHandler("Delete item fail!", 400));
+  }
+});
+
+export const DeleteCartItems = CatchAsyncError(async (req, res, next) => {
+  const { userId, itemIds } = req.body;
+  // console.log("req.body: ", req.body);
+  // console.log("itemids: ", itemIds, userId);
+  // Chuyển đổi itemIds từ chuỗi thành mảng ObjectId
+  // console.log("itemIdsArray: ", itemIdsArray);
+  const updatedUser = await UserModel.findOneAndUpdate(
+    { _id: userId },
+    {
+      $pull: {
+        cartItems: { _id: { $in: itemIds } },
+      },
+    },
+    { new: true } // Trả về tài liệu đã được cập nhật
+  );
+  if (updatedUser) {
+    res.json({
+      success: true,
+      message: "Delete cart items successfully!",
+      updatedUser,
+    });
+  } else {
+    return next(new ErrorHandler("USer not Found!", 404)); // Trả về 404 nếu không tìm thấy người dùng
+  }
+});

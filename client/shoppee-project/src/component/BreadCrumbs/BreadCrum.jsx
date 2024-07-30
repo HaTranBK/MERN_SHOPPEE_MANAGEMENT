@@ -5,7 +5,7 @@ const BreadCrum = () => (
     separator=">"
     items={[
       {
-        title: "Home",
+        title: "Shoppe",
       },
       {
         title: "Application Center",

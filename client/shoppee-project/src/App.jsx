@@ -8,13 +8,20 @@ import MainForm from "./component/SignUp/MainForm";
 import HomeTemplate from "./template/HomeTemplate/HomeTemplate";
 import BodyHome from "./component/BodyHome/BodyHome";
 import CategoryBasedBody from "./component/Categories/CategoryBasedBody";
-import InforPageBody from "./component/InforPage/InforPageBody";
+import CartTemplate from "./template/CartTemplate/CartTemplate";
+import Cart from "./component/Item/Cart";
+import NotFound from "./component/NotFound/NotFound";
 function App() {
   return (
     <Routes>
       <Route path="/" element={<HomeTemplate />}>
         <Route index element={<BodyHome />} />
         <Route path="/:pathname" element={<CategoryBasedBody />} />
+        <Route path="/not-found" element={<NotFound />} />
+      </Route>
+      <Route path="/cart" element={<CartTemplate />}>
+        <Route index element={<Cart />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
       <Route path="/pre-process" element={<SignInUpTemplate />}>
         <Route path="sign" element={<TemplateSign />}>
@@ -22,6 +29,7 @@ function App() {
           <Route path="signin" element={<SignIn />} />
         </Route>
       </Route>
+      {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>
   );
 }

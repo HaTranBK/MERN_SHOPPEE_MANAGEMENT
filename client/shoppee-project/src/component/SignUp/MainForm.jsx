@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 // import debounce from "lodash.debounce";
 import {
@@ -244,6 +244,7 @@ const MainForm = () => {
             name="firstname"
             onChange={handleChangeInput}
             value={user.firstname}
+            className="w-full"
           />
           <p className="text-red-500">{error.firstname}</p>
         </div>
@@ -255,6 +256,7 @@ const MainForm = () => {
             name="lastname"
             onChange={handleChangeInput}
             value={user.lastname}
+            className="w-full"
           />
           <p className="text-red-500">{error.lastname}</p>
         </div>
@@ -266,6 +268,7 @@ const MainForm = () => {
             name="email"
             onChange={handleChangeInput}
             value={user.email}
+            className="w-full"
           />
           <p className="text-red-500">{error.email}</p>
         </div>
@@ -277,6 +280,7 @@ const MainForm = () => {
             name="phone"
             onChange={handleChangeInput}
             value={user.phone}
+            className="w-full"
           />
           <p className="text-red-500">{error.phone}</p>
         </div>
@@ -288,6 +292,7 @@ const MainForm = () => {
             name="account"
             onChange={handleChangeInput}
             value={user.account}
+            className="w-full"
           />
           <p className="text-red-500">{error.account}</p>
         </div>
@@ -302,6 +307,7 @@ const MainForm = () => {
               name="password"
               onChange={handleChangeInput}
               value={user.password}
+              className="w-full"
             />
 
             <a onClick={handleShowPassword}>
@@ -354,6 +360,17 @@ const MainForm = () => {
           <p className="text-red-500">{error.role}</p>
         </FormControl>
       </form>
+      <div className="text-center">
+        <span>
+          Bạn đã có tài khoản?
+          <Link
+            to={"/hihi"}
+            className="text-red-600 underline underline-offset-2"
+          >
+            Đăng nhập
+          </Link>
+        </span>
+      </div>
       <div className="flex justify-center">
         <Toaster richColors position="top-right" />
         <button

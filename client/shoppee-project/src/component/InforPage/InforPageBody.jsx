@@ -3,6 +3,7 @@ import BreadCrum from "../BreadCrumbs/BreadCrum";
 import ItemInfor from "../Item/ItemInfor";
 
 const InforPageBody = ({ pathname }) => {
+  console.log("pathname in inforpagebody: ", pathname);
   return (
     <div>
       <BreadCrum />

@@ -19,8 +19,4 @@ export const generateToke = (user, message, statusCode, res) => {
       user,
       token,
     });
-  console.log(
-    "token999999: ",
-    new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000)
-  );
 };

@@ -18,9 +18,7 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  useEffect(() => {
-    console.log("user: ", user);
-  }, [user]);
+
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -42,7 +40,7 @@ const SignIn = () => {
         user,
         { withCredentials: true } //dùng để gửi kèm theo cookie hoặc nhận cookie trả về từ server
       );
-      console.log("response from signIn: ", response);
+      // console.log("response from signIn: ", response);
       notifySuccess(response.data.message);
       setUser({
         email: "",
@@ -51,7 +49,9 @@ const SignIn = () => {
       });
       const role = response.data.user.role;
       const localTokenName = role === "User" ? "userToken" : "adminToken";
+      console.log("user information in signin: ", response.data.user);
       dispatch(updateUserInformation(response.data.user));
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       localStorage.setItem(localTokenName, response.data.token);
       setTimeout(() => navigate("/"), 2000);
     } catch (error) {

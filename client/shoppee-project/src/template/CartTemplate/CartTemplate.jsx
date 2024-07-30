@@ -1,16 +1,16 @@
 import React from "react";
-import HomeHeader from "../../component/Header/HomeHeader";
+import HeaderCart from "../../component/Header/HeaderCart";
 import { Outlet } from "react-router-dom";
 import Footer from "../../component/Footer/Footer";
 
-const HomeTemplate = () => {
+const CartTemplate = () => {
   return (
     <div>
-      <HomeHeader />
+      <HeaderCart />
       <Outlet />
       <Footer />
     </div>
   );
 };
 
-export default HomeTemplate;
+export default CartTemplate;
