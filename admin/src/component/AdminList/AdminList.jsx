@@ -143,6 +143,29 @@ const AdminList = () => {
       />
     );
   };
+  const handleUpdateAdmin = async () => {
+    try {
+      // nếu dùng spread operator để clone state thì sẽ tạo ra shallow copy chứ khong như clone object bình thường
+      //       để tạo deep copy thì dùng const oldState = { a: 1, b: { c: 2 } };
+      // const newState = JSON.parse(JSON.stringify(oldState));
+      const update = {
+        ...updatedAdmin,
+        _id: admins[updatedAdmin.rowIndex]._id,
+      };
+      // console.log("update: ", update);
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/user/update-admin",
+        { update }
+      );
+      console.log("response in handle update admin: ", response);
+      setUpdatedAdmin({});
+      setTimeout(() => setOpenUpdateAdmin(false), 1000);
+      setTimeout(() => fecthAdmin(), 1500);
+    } catch (error) {
+      console.log("error from handle update admin: ", error);
+    }
+  };
+
   const handleAddAdmin = async () => {
     try {
       const { firstname, lastname, email, phone, gender, password, account } =
@@ -157,6 +180,23 @@ const AdminList = () => {
       setTimeout(() => fecthAdmin(), 2000);
     } catch (error) {
       console.log("error from add new admin: ", error);
+    }
+  };
+
+  const handleDeleteAdmin = async () => {
+    const { _id } = admins[updatedAdmin.rowIndex];
+    console.log("_id on admin handleDelete: ", _id);
+    try {
+      const response = await axios.delete(
+        "http://localhost:8000/api/v1/user/delete-admin",
+        { data: { _id } }
+      );
+      console.log("response in handleDelete admin account: ", response);
+      setUpdatedAdmin({});
+      setTimeout(() => setOpenUpdateAdmin(false), 1000);
+      setTimeout(() => fecthAdmin(), 1500);
+    } catch (error) {
+      console.log("error in handle delete admin account: ", error);
     }
   };
   return (
@@ -220,11 +260,16 @@ const AdminList = () => {
           >
             Return
           </button>,
-
+          <button
+            onClick={handleDeleteAdmin}
+            className="px-3 py-2 bg-red-500 me-3 rounded-md hover:bg-red-400"
+          >
+            Delete Admin
+          </button>,
           <button
             key="submit"
             loading={loading}
-            onClick={handleAddAdmin}
+            onClick={handleUpdateAdmin}
             className="bg-orange-500 text-white hover:bg-orange-400 px-4 py-2 rounded-md "
           >
             Complete Updating

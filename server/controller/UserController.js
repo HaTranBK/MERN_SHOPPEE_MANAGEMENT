@@ -97,7 +97,35 @@ export const getAdmin = CatchAsyncError(async (req, res, next) => {
     admin,
   });
 });
-export const RemoveAccount = CatchAsyncError(async (req, res, next) => {});
+export const RemoveAdminAccount = CatchAsyncError(async (req, res, next) => {
+  const { _id } = req.body;
+  console.log("_id in remove account admin: ", req.body);
+  const deletedAdmin = await UserModel.deleteOne({ _id });
+  if (!deletedAdmin)
+    return next(
+      new ErrorHandler("Admin not found, cannot delete this admin", 404)
+    );
+  res.json({
+    success: true,
+    message: "Admin Removed Successfully!",
+    deletedAdmin,
+  });
+});
+
+export const RemoveUserAccount = CatchAsyncError(async (req, res, next) => {
+  const { _id } = req.body;
+  console.log("_id in remove account user: ", req.body);
+  const deletedUser = await UserModel.deleteOne({ _id });
+  if (!deletedUser)
+    return next(
+      new ErrorHandler("User not found, cannot delete this user", 404)
+    );
+  res.json({
+    success: true,
+    message: "User Removed Successfully!",
+    deletedUser,
+  });
+});
 
 export const addNewAdmin = CatchAsyncError(async (req, res, next) => {
   console.log("rea.body on add new admin: ", req.body);
@@ -135,6 +163,44 @@ export const addNewAdmin = CatchAsyncError(async (req, res, next) => {
     role: "Admin",
   });
   generateToke(admin, "Admin Register Successfully", 200, res);
+});
+
+export const addNewUser = CatchAsyncError(async (req, res, next) => {
+  console.log("rea.body on add new admin: ", req.body);
+  const { firstname, lastname, email, phone, gender, password, account } =
+    req.body.newUser;
+  if (
+    !firstname ||
+    !lastname ||
+    !email ||
+    !phone ||
+    !gender ||
+    !password ||
+    !account
+  ) {
+    return next(new ErrorHandler("Please Fill Full Form !", 400));
+  }
+  const emailRegistered = await UserModel.findOne({ email });
+  console.log("existed email: ", emailRegistered);
+  if (emailRegistered) {
+    return next(
+      new ErrorHandler(
+        `${emailRegistered.role} With This Email ALready Exists !`,
+        200
+      )
+    );
+  }
+  const user = await UserModel.create({
+    firstname,
+    lastname,
+    email,
+    phone,
+    gender,
+    account,
+    password,
+    role: "User",
+  });
+  generateToke(user, "User Register Successfully", 200, res);
 });
 
 export const getAllAdmin = CatchAsyncError(async (req, res, next) => {
@@ -342,8 +408,8 @@ export const BuyProducts = CatchAsyncError(async (req, res, next) => {
 });
 
 export const EditAdmin = CatchAsyncError(async (req, res, next) => {
-  const { _id, firstname, lastname, email, phone, account, password } =
-    req.body;
+  const { _id, firstname, lastname, email, phone, account, password, gender } =
+    req.body.update;
   const updatedField = {
     $set: {
       firstname,
@@ -352,6 +418,7 @@ export const EditAdmin = CatchAsyncError(async (req, res, next) => {
       phone,
       account,
       password,
+      gender,
     },
   };
   const updatedAdmin = await UserModel.findOneAndUpdate({ _id }, updatedField, {
@@ -364,5 +431,32 @@ export const EditAdmin = CatchAsyncError(async (req, res, next) => {
     success: true,
     message: "Admin Updated Successfully!",
     updatedAdmin,
+  });
+});
+
+export const EditUser = CatchAsyncError(async (req, res, next) => {
+  const { _id, firstname, lastname, email, phone, account, password, gender } =
+    req.body.update;
+  const updatedField = {
+    $set: {
+      firstname,
+      lastname,
+      email,
+      phone,
+      account,
+      password,
+      gender,
+    },
+  };
+  const updatedUser = await UserModel.findOneAndUpdate({ _id }, updatedField, {
+    returnDocument: "after",
+  });
+  if (!updatedUser) {
+    return next(new ErrorHandler("User Not Found!", 404));
+  }
+  res.json({
+    success: true,
+    message: "User Updated Successfully!",
+    updatedUser,
   });
 });

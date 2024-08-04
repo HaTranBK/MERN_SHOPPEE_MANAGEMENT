@@ -14,12 +14,11 @@ import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 import { Toaster, toast } from "sonner";
 
-const EditAdmin = ({ passedDataProduct, setPassedDataProduct = {} }) => {
+const EditUserForm = ({ passedDataProduct, setPassedDataProduct = {} }) => {
   //   const initialNameProduct = passedDataProduct.name;
   const [showPassWord, setShowPassWrod] = useState(false);
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
-    console.log("name - value: ", name, value);
     setPassedDataProduct((preadmin) => {
       return { ...preadmin, [name]: value };
     });
@@ -139,4 +138,4 @@ const EditAdmin = ({ passedDataProduct, setPassedDataProduct = {} }) => {
   );
 };
 
-export default EditAdmin;
+export default EditUserForm;
