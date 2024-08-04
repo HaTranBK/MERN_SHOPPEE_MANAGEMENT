@@ -84,28 +84,33 @@ export const Login = CatchAsyncError(async (req, res, next) => {
   // });
 });
 
+export const getAdmin = CatchAsyncError(async (req, res, next) => {
+  const { _id } = req.body;
+  const admin = await UserModel.findOne({ _id });
+  console.log("admin on server side: ", admin);
+  if (!admin) {
+    return next(new ErrorHandler("Admin Not Found!", 404));
+  }
+  res.json({
+    success: true,
+    message: "Admin Got Successfully!",
+    admin,
+  });
+});
 export const RemoveAccount = CatchAsyncError(async (req, res, next) => {});
 
 export const addNewAdmin = CatchAsyncError(async (req, res, next) => {
-  const {
-    firstname,
-    lastname,
-    email,
-    phone,
-    birthday,
-    gender,
-    password,
-    role,
-  } = req.body;
+  console.log("rea.body on add new admin: ", req.body);
+  const { firstname, lastname, email, phone, gender, password, account } =
+    req.body;
   if (
     !firstname ||
     !lastname ||
     !email ||
     !phone ||
-    !birthday ||
     !gender ||
     !password ||
-    !role
+    !account
   ) {
     return next(new ErrorHandler("Please Fill Full Form !", 400));
   }
@@ -124,8 +129,8 @@ export const addNewAdmin = CatchAsyncError(async (req, res, next) => {
     lastname,
     email,
     phone,
-    birthday,
     gender,
+    account,
     password,
     role: "Admin",
   });
@@ -133,10 +138,18 @@ export const addNewAdmin = CatchAsyncError(async (req, res, next) => {
 });
 
 export const getAllAdmin = CatchAsyncError(async (req, res, next) => {
-  const admins = await UserModel.find({ role: "Admin" });
+  const admins = await UserModel.find({ role: "Admin" }).select("+password");
   res.status(200).json({
     success: true,
     admins,
+  });
+});
+
+export const getAllUser = CatchAsyncError(async (req, res, next) => {
+  const users = await UserModel.find({ role: "User" }).select("+password");
+  res.status(200).json({
+    success: true,
+    users,
   });
 });
 
@@ -291,4 +304,65 @@ export const DeleteCartItems = CatchAsyncError(async (req, res, next) => {
   } else {
     return next(new ErrorHandler("USer not Found!", 404)); // Trả về 404 nếu không tìm thấy người dùng
   }
+});
+
+export const BuyProducts = CatchAsyncError(async (req, res, next) => {
+  const { userId, itemIds } = req.body;
+  const user = await UserModel.findOne({ _id: userId });
+  if (!user)
+    return next(new ErrorHandler("User not Found in Buy Product: ", 404));
+  console.log("user in buy product on server: ", user);
+  const BoughtItems = user.cartItems.filter((item) => {
+    console.log("items: ", item._id.toString());
+    return itemIds.includes(item._id.toString());
+  });
+  console.log("bought items: ", BoughtItems);
+
+  const updatedUser = await UserModel.findOneAndUpdate(
+    { _id: userId },
+    {
+      $pull: {
+        cartItems: { _id: { $in: itemIds } },
+      },
+      $push: {
+        orders: { $each: BoughtItems },
+      },
+    },
+    { new: true } // Trả về tài liệu đã được cập nhật
+  );
+  if (updatedUser) {
+    res.json({
+      success: true,
+      message: " items successfully!",
+      updatedUser,
+    });
+  } else {
+    return next(new ErrorHandler("USer not Found!", 404)); // Trả về 404 nếu không tìm thấy người dùng
+  }
+});
+
+export const EditAdmin = CatchAsyncError(async (req, res, next) => {
+  const { _id, firstname, lastname, email, phone, account, password } =
+    req.body;
+  const updatedField = {
+    $set: {
+      firstname,
+      lastname,
+      email,
+      phone,
+      account,
+      password,
+    },
+  };
+  const updatedAdmin = await UserModel.findOneAndUpdate({ _id }, updatedField, {
+    returnDocument: "after",
+  });
+  if (!updatedAdmin) {
+    return next(new ErrorHandler("Admin Not Found!", 404));
+  }
+  res.json({
+    success: true,
+    message: "Admin Updated Successfully!",
+    updatedAdmin,
+  });
 });

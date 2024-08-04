@@ -3,23 +3,38 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const stringType = {
+  type: String,
+  required: true,
+};
+
 const CartSchema = new mongoose.Schema({
-  id: {
-    type: String,
+  id: stringType,
+  name: stringType,
+  thumb: stringType,
+  price: stringType,
+  quantity: {
+    type: Number,
     required: true,
   },
-  name: {
-    type: String,
+  createdAt: {
+    type: Date,
     required: true,
   },
-  thumb: {
-    type: String,
+  updatedAt: {
+    type: Date,
     required: true,
   },
-  price: {
+});
+const OrderSchema = new mongoose.Schema({
+  status: {
     type: String,
-    requied: true,
+    required: true,
+    default: "Được đặt",
   },
+  name: stringType,
+  thumb: stringType,
+  price: stringType,
   quantity: {
     type: Number,
     required: true,
@@ -61,7 +76,6 @@ const userSchema = new mongoose.Schema({
   account: {
     type: String,
     required: true,
-    required: true,
     minLength: [5, "Account name must contain at least 5 characters !"],
   },
   gender: {
@@ -84,9 +98,10 @@ const userSchema = new mongoose.Schema({
     type: [CartSchema],
     required: false,
   },
-  // orders: {
-  //   type:
-  // }
+  orders: {
+    type: [OrderSchema],
+    required: false,
+  },
 });
 
 //userSchema.pre is a hook than run before the user document is save to database.
@@ -100,7 +115,14 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 10);
   console.log("hashed password: ", this.password);
 });
-
+userSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate();
+  console.log("update in pre middleware: ", update.$set.password);
+  if (update.$set.password) {
+    update.$set.password = await bcrypt.hash(update.$set.password, 10);
+  }
+  next();
+});
 userSchema.methods.comparePassword = async function (enteredPassword) {
   console.log(
     "bạn đang vào compare password! @@@65 and hashed password: ",

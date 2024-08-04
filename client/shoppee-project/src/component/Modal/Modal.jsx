@@ -17,7 +17,6 @@ const CustomModal = ({
   let timeOutLogin, timeOutnavigate;
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const { islogin } = useSelector(userState);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const showModal = () => {

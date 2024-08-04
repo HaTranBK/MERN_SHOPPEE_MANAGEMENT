@@ -50,3 +50,50 @@ export const getSpecificCategory = CatchAsyncError(async (req, res, next) => {
     category,
   });
 });
+
+export const updateProduct = CatchAsyncError(async (req, res, next) => {
+  const { name, category, thumb, price, quantity } = req.body;
+  const { initName } = req.query;
+  const document = await productsModel.findOne({ category }).lean();
+  if (!document) {
+    // const
+    return next(new ErrorHandler("Product Not Found!", 404));
+  }
+  console.log("document: ", document.category);
+  console.log("document: ", document?.product_1?.name);
+  let update = {};
+  let nameKey = "";
+  // for (const key in document) {
+  //   if (key.startsWith("product_")) {
+  //     if (document[key].name === initName) {
+  //       const newProduct = { ...document[key], thumb, name, price, quantity };
+  //       nameKey = key;
+  //       // console.log("newProduct: ", newProduct);
+  //       update = { ...newProduct };
+  //       // console.log("update: ", update);
+  //       console.log("namekey: ", [nameKey]);
+  //     }
+  //   }
+  //   // update = { ...update, key: document[key] };
+  // }
+  const updatedField = { [nameKey]: update };
+  console.log("updatedField: ", updatedField);
+  console.log("category: ", category);
+  console.log("name: ", name);
+  const updatedProduct = await productsModel.findOneAndUpdate(
+    { category },
+    { category: "Smartphone2" },
+    {
+      new: true,
+    }
+    // { $set: updatedField },
+    // { returnDocument: "after" }
+  );
+  // console.log("updatedProduct: ", updatedProduct.product_1);
+  if (!updatedProduct) return next(new ErrorHandler("Updated failed!", 400));
+  res.json({
+    success: true,
+    message: "Update Product successfully!",
+    updatedProduct,
+  });
+});

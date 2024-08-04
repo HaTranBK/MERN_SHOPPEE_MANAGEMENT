@@ -10,6 +10,7 @@ import { faS } from "@fortawesome/free-solid-svg-icons";
 import { ConvertNumber, formatNumber } from "../../utils/ParseNumber";
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 import { setLocalStorageItem } from "../../utils/localStorage";
+
 const Cart = () => {
   const localUser = JSON.parse(localStorage.getItem("user"));
   console.log("localuser: ", localUser);
@@ -260,7 +261,7 @@ const Cart = () => {
   };
 
   const handleDeletePickedItem = async (userId) => {
-    if (isChecked.every((num) => num === false)) setShowDeleteWarning(true);
+    if (isChecked.every((num) => num === false)) handleShowWarning();
     else {
       try {
         let pickedItemArr = [],
@@ -287,10 +288,55 @@ const Cart = () => {
         console.log("updated user in delete item: ", response);
 
         setLocalStorageItem("user", response.data.updatedUser);
-        setIsChecked(new Array(Cart.length - 1).fill(false));
-        setPickedItem(new Array(Cart.length - 1).fill(0));
+        setIsChecked(
+          new Array(Cart.length - pickedIndexItem.length).fill(false)
+        );
+        setPickedItem(new Array(Cart.length - pickedIndexItem.length).fill(0));
       } catch (error) {
         console.log("error from handle delete picked item: ", error);
+      }
+    }
+  };
+
+  const handleShowWarning = () => {
+    setShowDeleteWarning(true);
+    setTimeout(() => {
+      setShowDeleteWarning(false);
+    }, 2000);
+  };
+
+  const handleBuy = async (userId) => {
+    if (isChecked.every((item) => item === false)) handleShowWarning();
+    else {
+      let pickedItemArr = [],
+        pickedIndexItem = [];
+      Cart.forEach((item, index) => {
+        console.log("item: ", item);
+        if (isChecked[index]) {
+          console.log("item._id: ", item._id);
+          pickedItemArr.push(item._id);
+          pickedIndexItem.push(index);
+        }
+      });
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/v1/user/buy",
+          {
+            userId,
+            itemIds: pickedItemArr,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        console.log("response in handleBuy: ", response);
+        setLocalStorageItem("user", response.data.updatedUser);
+        setIsChecked(
+          new Array(Cart.length - pickedIndexItem.length).fill(false)
+        );
+        setPickedItem(new Array(Cart.length - pickedIndexItem.length).fill(0));
+      } catch (error) {
+        console.log("error in handleBuy: ", error);
       }
     }
   };
@@ -323,7 +369,7 @@ const Cart = () => {
           {renderCartItems()}
 
           <div className="container_">
-            <div className="topMost grid grid-cols-2">
+            <div className="topMost grid grid-cols-2 pt-3 bg-gray-200 border-b-gray-300 border">
               <div className=""></div>
               <div className="flex justify-between ps-14 pe-6">
                 <span>
@@ -341,7 +387,7 @@ const Cart = () => {
                 </p>
               </div>
             </div>
-            <div className="middlePart grid grid-cols-2">
+            <div className="middlePart grid grid-cols-2 py-3 bg-gray-200 border-b-gray-300 border">
               <div></div>
               <div className="flex justify-between ps-4 pe-6">
                 <div className="flex justify-around items-center">
@@ -364,8 +410,8 @@ const Cart = () => {
                 <span>0đ</span>
               </div>
             </div>
-            <div className="bottomMost flex justify-between">
-              <div className="bottomMost_left flex justify-around space-x-3">
+            <div className="bottomMost flex justify-between py-4 bg-gray-200 border-b-gray-300 border ">
+              <div className="bottomMost_left flex items-center justify-around space-x-3">
                 <span className="checkbox_container col-span-4 ms-4">
                   <label className="custom-checkbox-container">
                     <input
@@ -391,9 +437,17 @@ const Cart = () => {
                 </span>
               </div>
               <div className="bottomMost_right pe-6">
-                <span>
+                <span className="space-x-3">
                   Tổng thanh toán ({renderNumberOfPickedItem()} Sản phẩm):
-                  <span className="text-red-600">đ{renderToTalPrice()}</span>
+                  <span className="text-red-600 ms-2">
+                    đ{renderToTalPrice()}
+                  </span>
+                  <button
+                    className="py-3 px-6 bg-orange-500 text-white rounded-sm hover:bg-orange-400"
+                    onClick={() => handleBuy(localUser._id)}
+                  >
+                    Mua Hàng
+                  </button>
                 </span>
               </div>
             </div>

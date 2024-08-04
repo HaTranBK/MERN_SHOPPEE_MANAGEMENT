@@ -1,0 +1,32 @@
+.AdminInformation .InforTitle::before {
+  content: "";
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 200px;
+  height: 2px;
+  border-bottom: 2px solid orangered;
+}
+
+.InforTitle {
+  position: relative;
+}
+form {
+  padding: 10px 0px;
+  .password_form {
+    position: relative;
+    .exposed_password {
+      position: absolute;
+      right: 10px;
+      top: 40%;
+      color: rgb(185, 182, 177);
+    }
+  }
+}
+.ant-table-thead .ant-table-cell {
+  background-color: orangered !important;
+  color: white !important;
+}
+.ant-table-thead .ant-table-cell svg {
+  color: white !important;
+}

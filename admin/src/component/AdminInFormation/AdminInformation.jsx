@@ -2,34 +2,11 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { ConfigProvider, Popover } from "antd";
-import CustomModal from "../Modal/Modal";
-import { setLocalStorageItem } from "../../utils/localStorage";
-import axios from "axios";
-const UserInformations = () => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+import CustomModal from "../../../../client/shoppee-project/src/component/Modal/Modal";
+const AdminInformation = ({ admin }) => {
   // const text = <span>Title</span>;
-  console.log("user in userinformation: ", user);
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/user/get-user",
-          {
-            withCredentials: true,
-            params: {
-              _id: user._id,
-            },
-          }
-        );
-        console.log("fetchUSer: ", response);
-        setLocalStorageItem("user", response.data.user);
-        setUser(response.data.user);
-      } catch (error) {
-        console.log("Error in useEffect in userInformation!", error);
-      }
-    };
-    fetchUser();
-  }, []);
+  console.log("user in userinformation: ", admin);
+
   const content = (
     <div>
       <CustomModal
@@ -51,7 +28,7 @@ const UserInformations = () => {
             </div>
 
             <span className="text-white">
-              {user?.firstname} {user?.lastname}
+              {admin?.firstname} {admin?.lastname}
             </span>
           </div>
         </Popover>
@@ -60,4 +37,4 @@ const UserInformations = () => {
   );
 };
 
-export default UserInformations;
+export default AdminInformation;

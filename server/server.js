@@ -8,6 +8,8 @@ import cloudinary from "cloudinary";
 import userRouter from "./router/userRouter.js";
 import productRouter from "./router/productsRouter.js";
 import { errorMiddleWare } from "./MiddleWares/ErrorMiddleWare.js";
+import AdRouter from "./router/AdminProductRouter.js";
+import CategoryRouter from "./router/CategoryRouter.js";
 dotenv.config({ path: "./config/cfg.env" });
 
 cloudinary.v2.config({
@@ -44,6 +46,8 @@ app.use(
 //NẾU CÓ LỖI THÌ SẼ ĐẾN ERRORMIDDLEWARE PHÍA DƯỚI ĐỂ XỬ LÝ
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/adproduct", AdRouter);
+app.use("/api/v1/category", CategoryRouter);
 //connecting to database MongooDB
 dbConnection();
 
