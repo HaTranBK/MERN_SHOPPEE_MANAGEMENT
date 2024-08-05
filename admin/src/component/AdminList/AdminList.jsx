@@ -4,6 +4,7 @@ import axios from "axios";
 import "./Admin.css";
 import EditProductForm from "../EditForm/EditProductForm";
 import EditAdmin from "../EditForm/EditAdmin";
+
 const AdminList = () => {
   const [loading, setLoading] = useState(false);
   const [admins, setAdmins] = useState([]);

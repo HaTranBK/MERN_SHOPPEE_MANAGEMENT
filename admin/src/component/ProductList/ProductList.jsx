@@ -76,6 +76,7 @@ const ProductList = () => {
       title: "Quantity",
       dataIndex: "quantity",
     },
+    // FIX: Add more column actions for "edit", delete, view detail of table's row
   ];
 
   const handleCancel = () => {
@@ -155,6 +156,7 @@ const ProductList = () => {
         dataSource={data}
         onChange={onChange}
         className="me-5"
+        // FIX
         onRow={(record, rowIndex) => {
           // console.log("record - rowIndex: ", record, rowIndex);
           return {
@@ -259,6 +261,7 @@ const ProductList = () => {
           />
         </div>
       </Modal>
+      {/* FIX: Write a custome model*/}
       <Modal
         open={openAdd}
         title="Add Product"

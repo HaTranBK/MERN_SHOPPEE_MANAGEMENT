@@ -12,4 +12,5 @@ router.get("/get-products", getAllProducts);
 router.get("/get-category", getSpecificCategory);
 router.get("/get-product", getSingleProduct);
 router.post("/update-product", updateProduct);
+
 export default router;

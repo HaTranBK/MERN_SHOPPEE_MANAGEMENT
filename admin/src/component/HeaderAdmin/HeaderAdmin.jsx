@@ -23,6 +23,8 @@ const HeaderAdmin = () => {
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
+        // FIX: Move URL to constant
+        // Create api.js file. Create many functions with ....
         const response = await axios.get(
           "http://localhost:8000/api/v1/user/admin/me",
           { _id }

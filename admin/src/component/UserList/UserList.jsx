@@ -10,6 +10,7 @@ const UserList = () => {
   const [updatedUser, setUpdatedUser] = useState({});
   const [openAddUser, setOpenAddUser] = useState(false);
   const [openUpdateUSer, setOpenUpdateUser] = useState(false);
+  // FIX: Don't use data variable this way to render to UI
   let data = [];
   const democss = "bg-orange-500 text-white";
   const columns = [
@@ -90,6 +91,7 @@ const UserList = () => {
     setLoading(true);
     handleUpdateUser();
 
+    // FIX: don't use setTimeout with no reason
     setTimeout(() => {
       setLoading(false);
       setOpenUpdateUser(false);
@@ -190,6 +192,7 @@ const UserList = () => {
       );
       console.log("resposne in delete user: ", response);
       setUpdatedUser({});
+      // FIX: why do u use setTimeout for this
       setTimeout(() => setOpenUpdateUser(false), 1000);
       setTimeout(() => fetchUser(), 1500);
     } catch (error) {
