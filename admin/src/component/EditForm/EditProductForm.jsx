@@ -6,6 +6,7 @@ import { Toaster, toast } from "sonner";
 
 const EditProductForm = ({ passedDataProduct, setPassedDataProduct = {} }) => {
   const initialNameProduct = passedDataProduct.name;
+
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setPassedDataProduct((preadmin) => {

@@ -6,6 +6,7 @@ const getAllCategory = async () => {
   const AllProducts = await productsModel.find({});
   return AllProducts;
 };
+
 export const getAllProducts = CatchAsyncError(async (req, res, next) => {
   const productsFromData = await getAllCategory();
   console.log("productsFromData on server side: ", productsFromData);
@@ -37,6 +38,7 @@ export const getSingleProduct = CatchAsyncError(async (req, res, next) => {
     AllProducts,
   });
 });
+
 export const getSpecificCategory = CatchAsyncError(async (req, res, next) => {
   console.log("req in getSpecificCategory: ", req.query);
   const category = await productsModel.find({ category: req.query.category });

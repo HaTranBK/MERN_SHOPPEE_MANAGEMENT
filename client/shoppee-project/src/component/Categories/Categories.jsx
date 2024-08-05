@@ -44,6 +44,7 @@ const Categories = () => {
   }, []);
 
   console.log("products_ : ", products);
+
   const renderCategories = () => {
     console.log("banj ddang vao renderCategories: ", products);
     const categoryArr = [

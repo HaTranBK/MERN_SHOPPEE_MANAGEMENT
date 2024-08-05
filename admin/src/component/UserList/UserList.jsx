@@ -7,7 +7,6 @@ const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newUser, setNewUser] = useState({});
-
   const [updatedUser, setUpdatedUser] = useState({});
   const [openAddUser, setOpenAddUser] = useState(false);
   const [openUpdateUSer, setOpenUpdateUser] = useState(false);
@@ -82,6 +81,7 @@ const UserList = () => {
       dataIndex: "gender",
     },
   ];
+
   const handleCancel = () => {
     setOpenUpdateUser(false);
   };
@@ -135,9 +135,11 @@ const UserList = () => {
       });
     });
   };
+
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
   };
+
   const fetchUser = async () => {
     try {
       const response = await axios.get(
@@ -149,9 +151,11 @@ const UserList = () => {
       console.log("error from get all Users: ", error);
     }
   };
+
   useEffect(() => {
     fetchUser();
   }, []);
+
   const renderUserList = () => {
     PassesDataTable();
     return (

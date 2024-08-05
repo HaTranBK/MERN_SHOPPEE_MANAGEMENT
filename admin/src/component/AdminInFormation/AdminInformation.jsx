@@ -18,6 +18,7 @@ const AdminInformation = ({ admin }) => {
       <p>Content</p>
     </div>
   );
+
   return (
     <>
       <ConfigProvider>

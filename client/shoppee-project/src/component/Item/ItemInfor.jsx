@@ -14,6 +14,7 @@ const ItemInfor = ({ pathname }) => {
   const [id_, setId_] = useState("");
   const formattedPathname = pathname.replace(/-/g, " ");
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchSingleproduct = async () => {
       try {
@@ -100,7 +101,9 @@ const ItemInfor = ({ pathname }) => {
       }
     }
   };
+
   console.log("inforItem: ", inforItem);
+
   return (
     <div className="container_ flex  h-96">
       <div className="h-44 w-1/4 h-4/5">

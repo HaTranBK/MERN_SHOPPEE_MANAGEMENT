@@ -106,6 +106,7 @@ const HomeHeader = () => {
     };
     authenticate();
   }, []);
+
   console.log("bạn vào homeheader! ");
   return (
     <header className=" py-6" style={{ backgroundColor: "#FB5730" }}>

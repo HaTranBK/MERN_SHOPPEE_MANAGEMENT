@@ -1,20 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "./AdminInfor.css";
-import { Button, Modal } from "antd";
-import { TextField } from "@mui/material";
+import { Modal } from "antd";
 import EditForm from "../EditForm/EditForm";
-import Password from "antd/es/input/Password";
+import axios from "axios";
+import EditAdmin from "../EditForm/EditAdmin";
 const AdminFullInformations = () => {
-  const [admin, setAdmin] = useState({
-    firstname: "ngọc hà",
-    lastname: "trần",
-    email: "ngocha6@gm.com",
-    phone: "0367438763",
-    account: "ngocha",
-    password: "ngocha8751",
-  });
+  const [admin, setAdmin] = useState({});
+  const [updatedAdmin, setUpdatedAdmin] = useState({});
   const informationType = [
     "First Name",
     "Last Name",
@@ -23,35 +17,50 @@ const AdminFullInformations = () => {
     "Account",
     "password",
   ];
-  const dispatch = useDispatch();
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       const response = await axios.get(
-  //         "http://localhost:8000/api/v1/user/admin/me",
-  //         {}
-  //       );
-  //     };
-
-  //     return () => {
-  //       second;
-  //     };
-  //   }, [third]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const showModal = () => {
-    setOpen(true);
-  };
-  const handleOk = () => {
-    setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-      setOpen(false);
-    }, 2000);
+  const fetchData = async () => {
+    try {
+      const _id = "66ae82303db124b7956be15e";
+      const response = await axios.get(
+        "http://localhost:8000/api/v1/user/admin/me",
+        {
+          params: { _id },
+        }
+      );
+      console.log("response in fetchAdmin information: ", response);
+      setAdmin(response.data.admin);
+      // setAdmin()
+    } catch (error) {
+      console.log("error from fecth admin information: ", error);
+    }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleUpdateAdmin = async () => {
+    try {
+      const update = { ...updatedAdmin, _id: admin._id };
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/user/update-admin",
+        { update }
+      );
+      console.log("response in handle update admin: ", response);
+      setUpdatedAdmin({});
+      setTimeout(() => setOpen(false));
+      setTimeout(() => setAdmin(response.data.updatedAdmin));
+    } catch (error) {
+      console.log("error from updated admin in admiInformation: ", error);
+    }
+  };
+
   const handleCancel = () => {
     setOpen(false);
   };
+
   const renderInformation = () => {
     return Object.entries(admin).map(([key, value], index) => {
       console.log("key - value: ", key, value);
@@ -63,6 +72,7 @@ const AdminFullInformations = () => {
       );
     });
   };
+
   return (
     <div>
       <div className="AdminInformation w-full">
@@ -75,34 +85,41 @@ const AdminFullInformations = () => {
         <div className="text-center">
           <button
             className="px-5 py-3 bg-yellow-600 rounded-md"
-            onClick={() => setOpen(true)}
+            onClick={() => {
+              setOpen(true);
+              setUpdatedAdmin(admin);
+            }}
           >
             Edit
           </button>
           <Modal
             open={open}
-            title="Edit Admin Information"
-            onOk={handleOk}
-            onCancel={handleCancel}
+            title="Update Admin Information"
+            // onOk={handleAddAdmin}
+            onCancel={() => handleCancel(false)}
             footer={[
               <button
-                onClick={handleCancel}
+                onClick={() => handleCancel(false)}
                 className="px-3 py-2 bg-gray-200 me-3 rounded-md hover:bg-gray-300"
               >
                 Return
               </button>,
+
               <button
                 key="submit"
                 loading={loading}
-                onClick={handleOk}
+                onClick={handleUpdateAdmin}
                 className="bg-orange-500 text-white hover:bg-orange-400 px-4 py-2 rounded-md "
               >
-                Submit
+                Complete Updating
               </button>,
             ]}
           >
             <div>
-              <EditForm admin={admin} setAdmin={setAdmin} />
+              <EditAdmin
+                passedDataProduct={JSON.parse(JSON.stringify(updatedAdmin))}
+                setPassedDataProduct={setUpdatedAdmin}
+              />
             </div>
           </Modal>
         </div>

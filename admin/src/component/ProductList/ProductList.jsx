@@ -13,52 +13,6 @@ const ProductList = () => {
   const [updatedFields, setUpdatedFields] = useState({});
   const [newProduct, setNewProduct] = useState({});
   const [passedDataProduct, setPassedDataProduct] = useState({});
-
-  const showModal = () => {
-    setOpen(true);
-  };
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
-  const handleOk = () => {
-    setLoading(true);
-    handleUpdateProduct();
-
-    setTimeout(() => {
-      setLoading(false);
-      setOpen(false);
-    }, 1000);
-  };
-
-  const handleOkAdd = async () => {
-    // setLoading(true);
-    try {
-      console.log("newProduct: ", newProduct);
-      const responseNewProduct = await axios.post(
-        "http://localhost:8000/api/v1/adproduct/add-adminproduct",
-        {
-          newProduct,
-        }
-      );
-
-      console.log("newProduct: ", responseNewProduct);
-      setNewProduct({});
-      fetchProduct();
-      setTimeout(() => {
-        // setLoading(false);
-        setOpenAdd(false);
-      }, 1000);
-    } catch (error) {
-      console.log("error from add admin product: ", error);
-    }
-  };
-
-  const handleCancelAdd = () => {
-    setNewProduct({});
-    setOpenAdd(false);
-  };
-
   const columns = [
     {
       title: "Category",
@@ -123,6 +77,48 @@ const ProductList = () => {
       dataIndex: "quantity",
     },
   ];
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const handleOk = () => {
+    setLoading(true);
+    handleUpdateProduct();
+
+    setTimeout(() => {
+      setLoading(false);
+      setOpen(false);
+    }, 1000);
+  };
+
+  const handleOkAdd = async () => {
+    // setLoading(true);
+    try {
+      console.log("newProduct: ", newProduct);
+      const responseNewProduct = await axios.post(
+        "http://localhost:8000/api/v1/adproduct/add-adminproduct",
+        {
+          newProduct,
+        }
+      );
+
+      console.log("newProduct: ", responseNewProduct);
+      setNewProduct({});
+      fetchProduct();
+      setTimeout(() => {
+        // setLoading(false);
+        setOpenAdd(false);
+      }, 1000);
+    } catch (error) {
+      console.log("error from add admin product: ", error);
+    }
+  };
+
+  const handleCancelAdd = () => {
+    setNewProduct({});
+    setOpenAdd(false);
+  };
 
   const PassesDataTable = () => {
     products.forEach((item) => {
@@ -212,6 +208,7 @@ const ProductList = () => {
       console.log("error from handle delete admin product: ", error);
     }
   };
+
   return (
     <div>
       <div className="relative">

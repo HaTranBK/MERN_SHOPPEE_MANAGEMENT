@@ -38,6 +38,7 @@ const CategoryBasedProducts = ({ pathname }) => {
     });
     setOrder(ordertype.two);
   };
+
   const isValidKey = (key) => {
     return key[0] !== "category" && key[0] !== "_id" && key[0] !== "variants";
   };

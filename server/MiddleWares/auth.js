@@ -2,6 +2,7 @@ import { UserModel } from "../models/userSchema.js";
 import { CatchAsyncError } from "./CatchAsyncError.js";
 import ErrorHandler from "./ErrorMiddleWare.js";
 import jwt from "jsonwebtoken";
+
 export const isAdminAuthenticated = CatchAsyncError(async (req, res, next) => {
   console.log("cookie of admin: ", req.cookies);
   const token = req.cookies.adminToken;

@@ -3,6 +3,7 @@ import { CatchAsyncError } from "../MiddleWares/CatchAsyncError.js";
 import ErrorHandler from "../MiddleWares/ErrorMiddleWare.js";
 import { UserModel } from "../models/userSchema.js";
 import { generateToke } from "../utils/jwtToken.js";
+
 export const UserRegister = CatchAsyncError(async (req, res, next) => {
   console.log("bạn vào register!");
   const { firstname, lastname, email, phone, account, gender, password, role } =
@@ -85,7 +86,8 @@ export const Login = CatchAsyncError(async (req, res, next) => {
 });
 
 export const getAdmin = CatchAsyncError(async (req, res, next) => {
-  const { _id } = req.body;
+  const { _id } = req.query;
+  // console.log("_id in getAdmin on server side: ", req.body);
   const admin = await UserModel.findOne({ _id });
   console.log("admin on server side: ", admin);
   if (!admin) {
@@ -97,6 +99,7 @@ export const getAdmin = CatchAsyncError(async (req, res, next) => {
     admin,
   });
 });
+
 export const RemoveAdminAccount = CatchAsyncError(async (req, res, next) => {
   const { _id } = req.body;
   console.log("_id in remove account admin: ", req.body);
@@ -238,6 +241,7 @@ export const LogOutAdmin = async (req, res, next) => {
       success: true,
     });
 };
+
 export const LogOutUser = async (req, res, next) => {
   console.log("ban vao logout tren server");
   res
@@ -266,11 +270,13 @@ export const AddCartItem = CatchAsyncError(async (req, res, next) => {
   let update = "";
   if (flag) update = { $set: { cartItems: user.cartItems } };
   else update = { $push: { cartItems: req.body } };
+  console.log("update in add cart user 269: ", update);
   const updatedUser = await UserModel.findOneAndUpdate(
     { _id: req.query._id },
     update,
     { returnDocument: "after" }
   );
+  console.log("updatedUser on 275 i add cart user: ", updatedUser);
   if (!updatedUser) {
     return next(new ErrorHandler("Updating user fail!", 200));
   }
@@ -280,6 +286,7 @@ export const AddCartItem = CatchAsyncError(async (req, res, next) => {
     updatedUser,
   });
 });
+
 export const getSingleUser = CatchAsyncError(async (req, res, next) => {
   const user = await UserModel.findOne({ _id: req.query._id });
   console.log("user in getsingleuser: ", user);
@@ -291,6 +298,7 @@ export const getSingleUser = CatchAsyncError(async (req, res, next) => {
     user,
   });
 });
+
 export const updateCartUser = CatchAsyncError(async (req, res, next) => {
   console.log("ban dang vao update cart user");
   const { id, type, index, itemId } = req.query;

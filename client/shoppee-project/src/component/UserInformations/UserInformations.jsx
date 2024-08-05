@@ -9,6 +9,7 @@ const UserInformations = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   // const text = <span>Title</span>;
   console.log("user in userinformation: ", user);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -30,6 +31,7 @@ const UserInformations = () => {
     };
     fetchUser();
   }, []);
+
   const content = (
     <div>
       <CustomModal

@@ -13,6 +13,7 @@ const AdminList = () => {
   const [updatedAdmin, setUpdatedAdmin] = useState({});
   let data = [];
   const democss = "bg-orange-500 text-white";
+
   const columns = [
     {
       title: "First Name",
@@ -119,6 +120,7 @@ const AdminList = () => {
   useEffect(() => {
     fecthAdmin();
   }, []);
+
   const renderAdminList = () => {
     PassesDataTable();
     return (
@@ -143,6 +145,7 @@ const AdminList = () => {
       />
     );
   };
+
   const handleUpdateAdmin = async () => {
     try {
       // nếu dùng spread operator để clone state thì sẽ tạo ra shallow copy chứ khong như clone object bình thường
@@ -199,6 +202,7 @@ const AdminList = () => {
       console.log("error in handle delete admin account: ", error);
     }
   };
+
   return (
     <div>
       <div className="relative">

@@ -58,6 +58,7 @@ const Cart = () => {
     if (newIsCheckedArr.every((num) => num === true)) setIsAllChecked(true);
     else setIsAllChecked(false);
   };
+
   console.log("re render");
 
   const handleDeleteCartItem = async (itemid, userid = localUser._id) => {

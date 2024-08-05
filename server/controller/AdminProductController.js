@@ -12,6 +12,7 @@ export const getAllAdminProduct = CatchAsyncError(async (req, res, next) => {
     AllAdminProducts,
   });
 });
+
 export const addSingleAdProduct = CatchAsyncError(async (req, res, next) => {
   const { name, thumb, price, quantity, category } = req.body.newProduct;
   const insertedDocument = { name, thumb, price, quantity, category };
@@ -54,6 +55,7 @@ export const updateAdPorduct = CatchAsyncError(async (req, res, next) => {
     updatedProduct,
   });
 });
+
 export const deleteAdProduct = CatchAsyncError(async (req, res, next) => {
   const { _id } = req.body;
   const deletedProduct = await AdminProductModel.findOneAndDelete({ _id });

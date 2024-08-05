@@ -9,14 +9,12 @@ import { useState } from "react";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-
-// import debounce from "lodash.debounce";
-
 import { Toaster, toast } from "sonner";
 
 const EditUserForm = ({ passedDataProduct, setPassedDataProduct = {} }) => {
   //   const initialNameProduct = passedDataProduct.name;
   const [showPassWord, setShowPassWrod] = useState(false);
+
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setPassedDataProduct((preadmin) => {

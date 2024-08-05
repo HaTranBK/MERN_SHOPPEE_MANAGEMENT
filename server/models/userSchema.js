@@ -117,8 +117,8 @@ userSchema.pre("save", async function (next) {
 });
 userSchema.pre("findOneAndUpdate", async function (next) {
   const update = this.getUpdate();
-  console.log("update in pre middleware: ", update.$set.password);
-  if (update.$set.password) {
+  console.log("update in pre middleware: ", update?.$set?.password);
+  if (update?.$set?.password) {
     update.$set.password = await bcrypt.hash(update.$set.password, 10);
   }
   next();

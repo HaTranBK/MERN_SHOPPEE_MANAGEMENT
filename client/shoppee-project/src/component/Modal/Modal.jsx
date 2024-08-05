@@ -41,16 +41,19 @@ const CustomModal = ({
       clearTimeout(timeOutnavigate);
     };
   }, []);
+
   const handleClick = () => {
     if (type === "logout") handleLogout();
     else if (type === "delCartItem") handleDeleteCartItem(itemId, userId);
   };
+
   const buttonOpenModal = () => {
     if (type === "logout")
       return "w-full hover:cursor-pointer hover:bg-slate-200";
     else if (type === "delCartItem")
       return "px-3 leading-9 bg-gray-300 border border-gray-500 hover:bg-gray-200 hover:cursor-pointer";
   };
+
   const handleLogout = async () => {
     try {
       console.log("ban dang vao handlelogout!");

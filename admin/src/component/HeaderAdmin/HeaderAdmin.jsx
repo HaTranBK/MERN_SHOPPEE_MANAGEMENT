@@ -10,12 +10,15 @@ import {
 import { useState } from "react";
 import AdminInformation from "../AdminInFormation/AdminInformation";
 import axios from "axios";
+
 const HeaderAdmin = () => {
   const [admin, setAdmin] = useState({
     firstname: "",
     lastname: "",
   });
+
   const _id = getLocalStorageItem("admin")?._id;
+
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
@@ -39,6 +42,7 @@ const HeaderAdmin = () => {
     };
     fetchAdmin();
   }, []);
+
   return (
     <div>
       <div className="headerCart-Bottom">
