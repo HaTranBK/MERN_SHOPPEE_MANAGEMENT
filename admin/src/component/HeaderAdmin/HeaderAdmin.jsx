@@ -17,6 +17,7 @@ const HeaderAdmin = () => {
     lastname: "",
   });
 
+  // FIX: move _id inside useEffect
   const _id = getLocalStorageItem("admin")?._id;
 
   useEffect(() => {
