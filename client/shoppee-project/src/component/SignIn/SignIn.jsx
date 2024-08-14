@@ -1,14 +1,15 @@
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Radio } from "antd";
-import axios from "axios";
 import { Toaster, toast } from "sonner";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateUserInformation } from "../../redux/userReducer";
+import { LogIn } from "../../service/userAPICallClient";
+import { setLocalStorageItem } from "../../utils/localStorage";
 const SignIn = () => {
   const [user, setUser] = useState({
     email: "",
@@ -18,7 +19,8 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
+  const Location = window.location.port;
+  console.log("location: ", window.location.port);
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -35,11 +37,7 @@ const SignIn = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/login",
-        user,
-        { withCredentials: true } //dùng để gửi kèm theo cookie hoặc nhận cookie trả về từ server
-      );
+      const response = await LogIn(user);
       // console.log("response from signIn: ", response);
       notifySuccess(response.data.message);
       setUser({
@@ -51,7 +49,7 @@ const SignIn = () => {
       const localTokenName = role === "User" ? "userToken" : "adminToken";
       console.log("user information in signin: ", response.data.user);
       dispatch(updateUserInformation(response.data.user));
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      setLocalStorageItem(`${role}`, response.data.user);
       localStorage.setItem(localTokenName, response.data.token);
       setTimeout(() => navigate("/"), 2000);
     } catch (error) {

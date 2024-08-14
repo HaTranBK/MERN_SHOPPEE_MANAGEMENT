@@ -16,9 +16,12 @@ import axios from "axios";
 import DivideSign from "../../utils/DivideSign";
 import { ConfigProvider, Popover } from "antd";
 import CustomModal from "../Modal/Modal";
+import { getUserAuthenticated } from "../../service/userAPICallClient";
+import { setLocalStorageItem } from "../../utils/localStorage";
 
 const HomeHeader = () => {
   const { islogin } = useSelector(userState);
+  console.log("isLogin: ", islogin);
   const dispatch = useDispatch();
   const { cart } = useSelector(userState);
   const popover = document.querySelector(".popover_cart");
@@ -85,14 +88,10 @@ const HomeHeader = () => {
   useEffect(() => {
     const authenticate = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/user/user/me",
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await getUserAuthenticated();
         dispatch(updateIsLogIn(true));
         dispatch(updateUserInformation(response.data.user));
+        setLocalStorageItem("User", response.data.user);
         return response.data;
       } catch (error) {
         console.log("loi: ", error);

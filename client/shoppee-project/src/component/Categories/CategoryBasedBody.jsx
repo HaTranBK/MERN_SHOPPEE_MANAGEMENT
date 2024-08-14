@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import CategoryBasedProducts from "../Products/CategoryBasedProducts";
 import { useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";

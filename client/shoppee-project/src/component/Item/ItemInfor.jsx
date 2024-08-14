@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUserInformation } from "../../redux/userReducer";
 import { productsState, updateInforItem } from "../../redux/productsReducer";
 import { useNavigate } from "react-router-dom";
+import { getProduct } from "../../service/ProductAPICallClient.js";
+import { addCartItem } from "../../service/CartAPICallClient.js";
 const ItemInfor = ({ pathname }) => {
   const { inforItem } = useSelector(productsState);
   const dispatch = useDispatch();
@@ -18,15 +20,7 @@ const ItemInfor = ({ pathname }) => {
   useEffect(() => {
     const fetchSingleproduct = async () => {
       try {
-        const Products = await axios.get(
-          "http://localhost:8000/api/v1/products/get-product",
-          {
-            params: {
-              productname: pathname,
-            },
-          }
-        );
-        console.log("data of get single product: ", Products);
+        const Products = await getProduct(pathname);
         const matchedProductsArr = [];
         const matchedNameId = [];
         Products.data.AllProducts.forEach((item) => {
@@ -81,20 +75,10 @@ const ItemInfor = ({ pathname }) => {
       updatedAt: moment().format("YYYY-MM-DD"),
     };
     console.log("cartItem: ", CartItem);
-    const userDataFromLocal = JSON.parse(localStorage.getItem("user"));
+    const userDataFromLocal = JSON.parse(localStorage.getItem("User"));
     if (userDataFromLocal) {
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/v1/user/add-cart-item",
-          CartItem,
-          {
-            withCredentials: true,
-            params: {
-              _id: userDataFromLocal._id,
-            },
-          }
-        );
-        console.log("response from add cart item: ", response);
+        const response = await addCartItem(userDataFromLocal, CartItem);
         dispatch(updateUserInformation(response.data.updatedUser));
       } catch (error) {
         console.log("error from add cart item: ", error);

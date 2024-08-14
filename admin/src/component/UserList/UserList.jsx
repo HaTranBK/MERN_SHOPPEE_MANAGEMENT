@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Table } from "antd";
-import axios from "axios";
-import EditProductForm from "../EditForm/EditProductForm";
 import EditUserForm from "../EditForm/EditUserForm";
+import { addNew, delete_, getUsers, update_ } from "../../service/APICall";
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -10,9 +9,7 @@ const UserList = () => {
   const [updatedUser, setUpdatedUser] = useState({});
   const [openAddUser, setOpenAddUser] = useState(false);
   const [openUpdateUSer, setOpenUpdateUser] = useState(false);
-  // FIX: Don't use data variable this way to render to UI
-  let data = [];
-  const democss = "bg-orange-500 text-white";
+  // FIX: Don't use data variable this way to render to UI  (updated)
   const columns = [
     {
       title: "First Name",
@@ -91,11 +88,9 @@ const UserList = () => {
     setLoading(true);
     handleUpdateUser();
 
-    // FIX: don't use setTimeout with no reason
-    setTimeout(() => {
-      setLoading(false);
-      setOpenUpdateUser(false);
-    }, 1000);
+    // FIX: don't use setTimeout with no reason (updated)
+    setLoading(false);
+    setOpenUpdateUser(false);
   };
 
   const handleUpdateUser = async () => {
@@ -108,11 +103,7 @@ const UserList = () => {
         _id: users[updatedUser.rowIndex]._id,
       };
       // console.log("update: ", update);
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/update-user",
-        { update }
-      );
-      console.log("response in handle update user: ", response);
+      await update_(update, "user");
       setUpdatedUser({});
       setTimeout(() => setOpenUpdateUser(false), 1000);
       setTimeout(() => fetchUser(), 1500);
@@ -121,33 +112,13 @@ const UserList = () => {
     }
   };
 
-  const PassesDataTable = () => {
-    users.forEach((user, index) => {
-      const { firstname, lastname, email, phone, password, gender, account } =
-        user;
-      data.push({
-        key: index,
-        firstname,
-        lastname,
-        email,
-        account,
-        phone,
-        password,
-        gender,
-      });
-    });
-  };
-
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
   };
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/user/users"
-      );
-      console.log("response in userList: ", response);
+      const response = await getUsers();
       setUsers(response.data.users);
     } catch (error) {
       console.log("error from get all Users: ", error);
@@ -159,11 +130,10 @@ const UserList = () => {
   }, []);
 
   const renderUserList = () => {
-    PassesDataTable();
     return (
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={users}
         onChange={onChange}
         className="me-5"
         onRow={(record, rowIndex) => {
@@ -186,15 +156,11 @@ const UserList = () => {
   const handleDeleteUser = async () => {
     try {
       const { _id } = users[updatedUser.rowIndex];
-      const response = await axios.delete(
-        "http://localhost:8000/api/v1/user/delete-user",
-        { data: { _id } }
-      );
-      console.log("resposne in delete user: ", response);
+      await delete_(_id, "user");
       setUpdatedUser({});
       // FIX: why do u use setTimeout for this
-      setTimeout(() => setOpenUpdateUser(false), 1000);
-      setTimeout(() => fetchUser(), 1500);
+      setOpenUpdateUser(false);
+      fetchUser();
     } catch (error) {
       console.log("error from deleting user: ", error);
     }
@@ -204,14 +170,7 @@ const UserList = () => {
     // setLoading(true);
     try {
       console.log("newUser: ", newUser);
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/user/addnew",
-        {
-          newUser,
-        }
-      );
-
-      console.log("newUser: ", response);
+      await addNew(newUser, "user");
       setNewUser({});
       fetchUser();
       setTimeout(() => {

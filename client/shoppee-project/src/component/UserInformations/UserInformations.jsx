@@ -4,26 +4,17 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { ConfigProvider, Popover } from "antd";
 import CustomModal from "../Modal/Modal";
 import { setLocalStorageItem } from "../../utils/localStorage";
-import axios from "axios";
+import { getUser } from "../../service/userAPICallClient";
 const UserInformations = () => {
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("User")));
   // const text = <span>Title</span>;
   console.log("user in userinformation: ", user);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/user/get-user",
-          {
-            withCredentials: true,
-            params: {
-              _id: user._id,
-            },
-          }
-        );
-        console.log("fetchUSer: ", response);
-        setLocalStorageItem("user", response.data.user);
+        const response = await getUser(user._id);
+        setLocalStorageItem("User", response.data.user);
         setUser(response.data.user);
       } catch (error) {
         console.log("Error in useEffect in userInformation!", error);

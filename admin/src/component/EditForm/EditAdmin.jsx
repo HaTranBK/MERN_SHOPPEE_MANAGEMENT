@@ -17,6 +17,7 @@ import { Toaster, toast } from "sonner";
 const EditAdmin = ({ passedDataProduct, setPassedDataProduct = {} }) => {
   //   const initialNameProduct = passedDataProduct.name;
   const [showPassWord, setShowPassWrod] = useState(false);
+
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     console.log("name - value: ", name, value);
@@ -113,7 +114,7 @@ const EditAdmin = ({ passedDataProduct, setPassedDataProduct = {} }) => {
               className="w-full"
             />
 
-            <a onClick={() => setShowPassWrod(true)}>
+            <a onClick={() => setShowPassWrod(!showPassWord)}>
               <FontAwesomeIcon
                 icon={!showPassWord ? faEyeSlash : faEye}
                 className="exposed_password"

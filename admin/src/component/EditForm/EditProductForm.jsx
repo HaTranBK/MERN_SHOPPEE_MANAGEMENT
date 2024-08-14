@@ -2,11 +2,16 @@ import { TextField } from "@mui/material";
 
 // import debounce from "lodash.debounce";
 import { Select } from "antd";
+import { useEffect, useState } from "react";
 import { Toaster, toast } from "sonner";
 
-const EditProductForm = ({ passedDataProduct, setPassedDataProduct = {} }) => {
+const EditProductForm = ({
+  selectValue,
+  setSelectValue,
+  passedDataProduct,
+  setPassedDataProduct = {},
+}) => {
   const initialNameProduct = passedDataProduct.name;
-
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
     setPassedDataProduct((preadmin) => {
@@ -20,7 +25,12 @@ const EditProductForm = ({ passedDataProduct, setPassedDataProduct = {} }) => {
       return { ...preadmin, category: value };
     });
   };
-
+  useEffect(() => {
+    return () => {
+      console.log("re render in editpriductForm");
+      setSelectValue(undefined);
+    };
+  }, []);
   console.log("re render!", passedDataProduct);
   return (
     <div className="form-container rounded-md col-span-2 bg-white py-6">
@@ -83,9 +93,9 @@ const EditProductForm = ({ passedDataProduct, setPassedDataProduct = {} }) => {
             }}
             className="w-full"
             fieldNames={"category"}
-            defaultValue={passedDataProduct.category}
             placeholder="Search to Select Category"
             optionFilterProp="label"
+            value={passedDataProduct.category}
             onChange={handleChangeSelect}
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? "")

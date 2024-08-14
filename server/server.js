@@ -10,6 +10,11 @@ import productRouter from "./router/productsRouter.js";
 import { errorMiddleWare } from "./MiddleWares/ErrorMiddleWare.js";
 import AdRouter from "./router/AdminProductRouter.js";
 import CategoryRouter from "./router/CategoryRouter.js";
+import CartItemRouter from "./router/CartItemRouter.js";
+import { typeDefs } from "./schema/shcema.js";
+import { resolvers } from "./resolver/resolvers.js";
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
 dotenv.config({ path: "./config/cfg.env" });
 
 cloudinary.v2.config({
@@ -21,9 +26,12 @@ cloudinary.v2.config({
 //connecting to database MongooDB
 dbConnection();
 
+const server = new ApolloServer({ typeDefs, resolvers });
+const { url } = await startStandaloneServer(server, { listen: { port: 4000 } });
 const app = express();
+
 const PORT = process.env.PORT || 8000;
-console.log("port trong env: ", process.env.PORT);
+// console.log("port trong env: ", process.env.PORT);
 
 app.use(
   cors({
@@ -40,6 +48,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // thiết lập middleware để xử lý file được gửi lên
+
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -48,14 +57,18 @@ app.use(
 );
 //NẾU CÓ LỖI THÌ SẼ ĐẾN ERRORMIDDLEWARE PHÍA DƯỚI ĐỂ XỬ LÝ
 // FIX: Review RestAPI Standard for GET, POST, PUT, DELETE
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1", userRouter);
+
 app.use("/api/v1/products", productRouter);
+
 app.use("/api/v1/adproduct", AdRouter);
+
 app.use("/api/v1/category", CategoryRouter);
-app.use("/api/v1/cart", CategoryRouter);
+
+app.use("/api/v1/cart", CartItemRouter);
 
 app.use(errorMiddleWare);
 
-app.listen(PORT, () => {
-  console.log("SERVER IS RUNNING ON PORT: ", PORT);
-});
+// app.listen(PORT, () => {
+//   console.log("SERVER IS RUNNING ON PORT: ", PORT);
+// });

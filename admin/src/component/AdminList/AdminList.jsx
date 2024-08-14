@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Table } from "antd";
-import axios from "axios";
-import "./Admin.css";
-import EditProductForm from "../EditForm/EditProductForm";
-import EditAdmin from "../EditForm/EditAdmin";
 
+// import "./Admin.css";
+import { addNew, delete_, getAdmins, update_ } from "../../service/APICall";
+import CustomModal from "../CustomModal/CustomModal";
+import { EditOutlined } from "@ant-design/icons";
+import DeletePopup from "../../../../client/shoppee-project/src/component/Modal/Modal";
+import { Button } from "antd";
 const AdminList = () => {
-  const [loading, setLoading] = useState(false);
   const [admins, setAdmins] = useState([]);
   const [openAddAdmin, setOpenAddAdmin] = useState(false);
   const [openUpdateAdmin, setOpenUpdateAdmin] = useState(false);
   const [newAdmin, setNewAdmin] = useState({});
   const [updatedAdmin, setUpdatedAdmin] = useState({});
-  let data = [];
-  const democss = "bg-orange-500 text-white";
 
   const columns = [
     {
@@ -83,23 +82,33 @@ const AdminList = () => {
       title: "Gender",
       dataIndex: "gender",
     },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <span>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => handleEditClick(record)}
+          />
+          <DeletePopup
+            reason={"Xoá Admin"}
+            contents={"Bạn có chắc muốn xóa admin này !"}
+            type={"delAdmin"}
+            handleDeleteCartItem={handleDeleteAdmin}
+            itemId={record._id}
+            popupDeleteAdminProduct={true}
+            style={{ marginLeft: 8 }}
+          />
+        </span>
+      ),
+    },
   ];
 
-  const PassesDataTable = () => {
-    admins.forEach((admin, index) => {
-      const { firstname, lastname, email, phone, password, gender, account } =
-        admin;
-      data.push({
-        key: index,
-        firstname,
-        lastname,
-        email,
-        account,
-        phone,
-        password,
-        gender,
-      });
-    });
+  const handleEditClick = (record) => {
+    setOpenUpdateAdmin(true);
+    setUpdatedAdmin(record);
+    console.log("record in handleEditClick: ", record);
   };
 
   const onChange = (pagination, filters, sorter, extra) => {
@@ -108,10 +117,7 @@ const AdminList = () => {
 
   const fecthAdmin = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/user/admins"
-      );
-      console.log("response in adminList: ", response);
+      const response = await getAdmins();
       setAdmins(response.data.admins);
     } catch (error) {
       console.log("error from get all admins: ", error);
@@ -121,28 +127,14 @@ const AdminList = () => {
   useEffect(() => {
     fecthAdmin();
   }, []);
-
+  console.log("re render: ", openUpdateAdmin);
   const renderAdminList = () => {
-    PassesDataTable();
     return (
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={admins}
         onChange={onChange}
         className="me-5"
-        onRow={(record, rowIndex) => {
-          // console.log("record - rowIndex: ", record, rowIndex);
-          return {
-            onClick: (event) => {
-              const newRecord = { ...record, rowIndex };
-              // console.log("newRecord: ", newRecord);
-              // console.log("record - rowIndex: ", record, rowIndex);
-              setOpenUpdateAdmin(true);
-              setUpdatedAdmin(newRecord);
-              // console.log("event", event);
-            }, // click row
-          };
-        }}
       />
     );
   };
@@ -157,11 +149,7 @@ const AdminList = () => {
         _id: admins[updatedAdmin.rowIndex]._id,
       };
       // console.log("update: ", update);
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/update-admin",
-        { update }
-      );
-      console.log("response in handle update admin: ", response);
+      await update_(update, "admin");
       setUpdatedAdmin({});
       setTimeout(() => setOpenUpdateAdmin(false), 1000);
       setTimeout(() => fecthAdmin(), 1500);
@@ -172,13 +160,7 @@ const AdminList = () => {
 
   const handleAddAdmin = async () => {
     try {
-      const { firstname, lastname, email, phone, gender, password, account } =
-        newAdmin;
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/admin/addnew",
-        { firstname, lastname, email, phone, gender, password, account }
-      );
-      console.log("response in handle add new admin: ", response);
+      await addNew(newAdmin, "admin");
       setNewAdmin({});
       setTimeout(() => setOpenAddAdmin(false), 1500);
       setTimeout(() => fecthAdmin(), 2000);
@@ -187,15 +169,10 @@ const AdminList = () => {
     }
   };
 
-  const handleDeleteAdmin = async () => {
-    const { _id } = admins[updatedAdmin.rowIndex];
+  const handleDeleteAdmin = async (_id) => {
     console.log("_id on admin handleDelete: ", _id);
     try {
-      const response = await axios.delete(
-        "http://localhost:8000/api/v1/user/delete-admin",
-        { data: { _id } }
-      );
-      console.log("response in handleDelete admin account: ", response);
+      await delete_(_id, "admin");
       setUpdatedAdmin({});
       setTimeout(() => setOpenUpdateAdmin(false), 1000);
       setTimeout(() => fecthAdmin(), 1500);
@@ -203,7 +180,12 @@ const AdminList = () => {
       console.log("error in handle delete admin account: ", error);
     }
   };
-
+  const handleCancelAdd = async () => {
+    setOpenAddAdmin(false);
+  };
+  const handleCancelUpdate = async () => {
+    setOpenUpdateAdmin(false);
+  };
   return (
     <div>
       <div className="relative">
@@ -219,75 +201,28 @@ const AdminList = () => {
         </button>
       </div>
       <div>{renderAdminList()}</div>
-      <Modal
+
+      <CustomModal
         open={openAddAdmin}
-        title="Add new Admin"
-        onOk={handleAddAdmin}
-        onCancel={() => setOpenAddAdmin(false)}
-        footer={[
-          <button
-            onClick={() => {
-              setNewAdmin({});
-              setOpenAddAdmin(false);
-            }}
-            className="px-3 py-2 bg-gray-200 me-3 rounded-md hover:bg-gray-300"
-          >
-            Return
-          </button>,
+        title={"Add new Admin"}
+        handleCancel={handleCancelAdd}
+        handleOk={handleAddAdmin}
+        typeModal="ADD"
+        typeContent="user"
+        content={newAdmin}
+        setContent={setNewAdmin}
+      />
 
-          <button
-            key="submit"
-            loading={loading}
-            onClick={handleAddAdmin}
-            className="bg-orange-500 text-white hover:bg-orange-400 px-4 py-2 rounded-md "
-          >
-            Complete Add
-          </button>,
-        ]}
-      >
-        <div>
-          <EditAdmin
-            passedDataProduct={JSON.parse(JSON.stringify(newAdmin))}
-            setPassedDataProduct={setNewAdmin}
-          />
-        </div>
-      </Modal>
-
-      <Modal
+      <CustomModal
         open={openUpdateAdmin}
-        title="Update Admin Information"
-        // onOk={handleAddAdmin}
-        onCancel={() => setOpenUpdateAdmin(false)}
-        footer={[
-          <button
-            onClick={() => setOpenUpdateAdmin(false)}
-            className="px-3 py-2 bg-gray-200 me-3 rounded-md hover:bg-gray-300"
-          >
-            Return
-          </button>,
-          <button
-            onClick={handleDeleteAdmin}
-            className="px-3 py-2 bg-red-500 me-3 rounded-md hover:bg-red-400"
-          >
-            Delete Admin
-          </button>,
-          <button
-            key="submit"
-            loading={loading}
-            onClick={handleUpdateAdmin}
-            className="bg-orange-500 text-white hover:bg-orange-400 px-4 py-2 rounded-md "
-          >
-            Complete Updating
-          </button>,
-        ]}
-      >
-        <div>
-          <EditAdmin
-            passedDataProduct={JSON.parse(JSON.stringify(updatedAdmin))}
-            setPassedDataProduct={setUpdatedAdmin}
-          />
-        </div>
-      </Modal>
+        title={"Update Admin Information"}
+        handleCancel={handleCancelUpdate}
+        handleOk={handleUpdateAdmin}
+        typeModal="update"
+        typeContent="user"
+        content={updatedAdmin}
+        setContent={setUpdatedAdmin}
+      />
     </div>
   );
 };

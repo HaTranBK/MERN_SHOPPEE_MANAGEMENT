@@ -36,9 +36,7 @@ export const updateAdPorduct = CatchAsyncError(async (req, res, next) => {
         thumb: thumb,
         price: price,
         quantity: quantity,
-      },
-      $push: {
-        category: category,
+        category,
       },
     },
     {

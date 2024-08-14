@@ -207,6 +207,7 @@ export const addNewUser = CatchAsyncError(async (req, res, next) => {
 });
 
 export const getAllAdmin = CatchAsyncError(async (req, res, next) => {
+  console.log("getalladmin");
   const admins = await UserModel.find({ role: "Admin" }).select("+password");
   res.status(200).json({
     success: true,
@@ -303,6 +304,7 @@ export const updateCartUser = CatchAsyncError(async (req, res, next) => {
   console.log("ban dang vao update cart user");
   const { id, type, index, itemId } = req.query;
   const user = await UserModel.findOne({ _id: id });
+  console.log("user in updateCartUser: ", user);
   console.log("present quantity: ", user.cartItems[index].quantity, type);
 
   let newQuantity =
@@ -332,6 +334,7 @@ export const updateCartUser = CatchAsyncError(async (req, res, next) => {
 
 export const DeleteCartItem = CatchAsyncError(async (req, res, next) => {
   const { userId, itemId } = req.query;
+  console.log("userId and ItemId in delete cart item: ", userId, itemId);
   const updatedUser = await UserModel.findOneAndUpdate(
     { _id: userId },
     {

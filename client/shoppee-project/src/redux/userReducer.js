@@ -54,7 +54,7 @@ const userReducer = createSlice({
       state.user = actions.payload;
       state.islogin = true;
       state.cart = state.user.cartItems;
-      setLocalStorageItem("user", actions.payload);
+      // setLocalStorageItem("user", actions.payload);
     },
     updateIsLogIn: function (state, actions) {
       state.islogin = actions.payload;

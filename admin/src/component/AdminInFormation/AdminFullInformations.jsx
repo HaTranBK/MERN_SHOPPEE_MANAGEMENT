@@ -1,11 +1,9 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import "./AdminInfor.css";
+// import "./AdminInfor.css";
 import { Modal } from "antd";
-import EditForm from "../EditForm/EditForm";
-import axios from "axios";
 import EditAdmin from "../EditForm/EditAdmin";
+import { getUser, update_ } from "../../service/APICall";
 const AdminFullInformations = () => {
   const [admin, setAdmin] = useState({});
   const [updatedAdmin, setUpdatedAdmin] = useState({});
@@ -22,13 +20,8 @@ const AdminFullInformations = () => {
 
   const fetchData = async () => {
     try {
-      const _id = "66ae82303db124b7956be15e";
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/user/admin/me",
-        {
-          params: { _id },
-        }
-      );
+      const _id = "66af049bbe2e4b7203ef75fc";
+      const response = await getUser(_id);
       console.log("response in fetchAdmin information: ", response);
       setAdmin(response.data.admin);
       // setAdmin()
@@ -44,11 +37,7 @@ const AdminFullInformations = () => {
   const handleUpdateAdmin = async () => {
     try {
       const update = { ...updatedAdmin, _id: admin._id };
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/update-admin",
-        { update }
-      );
-      console.log("response in handle update admin: ", response);
+      const response = await update_(update);
       setUpdatedAdmin({});
       setTimeout(() => setOpen(false));
       setTimeout(() => setAdmin(response.data.updatedAdmin));

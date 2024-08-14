@@ -27,6 +27,7 @@ import {
 } from "../../validate/detailValidate";
 import { Toaster, toast } from "sonner";
 import { updateError, userState } from "../../redux/userReducer";
+import { SignUp } from "../../service/userAPICallClient";
 // import { init } from "create-react-app/createReactApp";
 
 const MainForm = () => {
@@ -205,14 +206,7 @@ const MainForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/signup",
-        user
-      );
-      console.log("respone: ", response);
-      if (response.status !== 200) {
-        console.log("lỗi khác 200");
-      }
+      const response = await SignUp(user);
       notifySuccess(response.data.message);
       setUser(initialUser);
       setDisableButton(true);

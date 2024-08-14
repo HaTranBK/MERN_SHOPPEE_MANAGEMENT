@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import AdminInformation from "../AdminInFormation/AdminInformation";
 import axios from "axios";
+import { getUser } from "../../service/APICall";
 
 const HeaderAdmin = () => {
   const [admin, setAdmin] = useState({
@@ -17,23 +18,15 @@ const HeaderAdmin = () => {
     lastname: "",
   });
 
-  // FIX: move _id inside useEffect
-  const _id = getLocalStorageItem("admin")?._id;
+  // FIX: move _id inside useEffect  (Updated)
 
   useEffect(() => {
     const fetchAdmin = async () => {
+      const _id = getLocalStorageItem("Admin")?._id;
       try {
         // FIX: Move URL to constant
-        // Create api.js file. Create many functions with ....
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/user/admin/me",
-          { _id }
-          // {
-          //   withCredentials: true,
-          // }
-        );
-
-        console.log("response: ", response);
+        // Create api.js file. Create many functions with ....  (Updated)
+        const response = await getUser(_id);
         if (!response) throw Error("Admin not found in local!");
         setAdmin(response.data.admin);
       } catch (error) {

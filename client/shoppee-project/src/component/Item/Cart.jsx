@@ -1,48 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./checkBox.css";
 import axios from "axios";
 import { updateUserInformation } from "../../redux/userReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomModal from "../Modal/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTicket } from "@fortawesome/free-solid-svg-icons";
 import { faS } from "@fortawesome/free-solid-svg-icons";
 import { ConvertNumber, formatNumber } from "../../utils/ParseNumber";
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
-import { setLocalStorageItem } from "../../utils/localStorage";
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from "../../utils/localStorage";
+import {
+  BuyItem,
+  DeleteCartItem,
+  ModifyQuantity,
+  PickedItem,
+} from "../../service/CartAPICallClient";
+import { useEffect } from "react";
 
 const Cart = () => {
-  const localUser = JSON.parse(localStorage.getItem("user"));
-  console.log("localuser: ", localUser);
-  const Cart = localUser.cartItems;
-
-  console.log("Cart: ", Cart);
+  const [isAllChecked, setIsAllChecked] = useState(false);
+  const [render, setRender] = useState(0);
+  const dispatch = useDispatch();
+  const [showDeleteWarning, setShowDeleteWarning] = useState(false);
+  const [localUser, setLocalUser] = useState({});
+  const [Cart, setCart] = useState([]);
+  const [pickedItem, setPickedItem] = useState(new Array(Cart.length).fill(0));
   const [isChecked, setIsChecked] = useState(
     new Array(Cart.length).fill(false)
   );
+  useEffect(() => {
+    const user = getLocalStorageItem("User");
+    setLocalUser(user);
+    setCart(user.cartItems);
+    setIsChecked(new Array(user.cartItems.length).fill(0));
+    setIsChecked(new Array(user.cartItems.length).fill(false));
+  }, []);
+
+  console.log("Cart: ", Cart);
   console.log("ischecked: ", isChecked);
-  const [isAllChecked, setIsAllChecked] = useState(false);
-  const [render, setRender] = useState(0);
-  const [pickedItem, setPickedItem] = useState(new Array(Cart.length).fill(0));
-  const dispatch = useDispatch();
-  const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
   const titleCss = "text-gray-500, text-sm, text-center";
   const alignHeight = " text-center my-auto";
   const modifyQuantity = "px-3 leading-9 bg-gray-300 border border-gray-500";
-
-  // useEffect(() => {
-  //   let newPickedItems = [];
-  //   isChecked.forEach((item, index) => {
-  //     if (item) {
-  //       console.log("quantity: ", Cart[index].quantity);
-  //       newPickedItems.push(
-  //         Number(ConvertNumber(Cart[index].price)) * Cart[index].quantity
-  //       );
-  //     }
-  //   });
-  //   setPickedItem(newPickedItems);
-  // }, [Cart]);
 
   const handleCheckboxChange = (index, price) => {
     let newIsCheckedArr = [...isChecked];
@@ -69,23 +72,12 @@ const Cart = () => {
           deletedId = index;
         }
       });
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/user/delete-item",
-        {},
-        {
-          withCredentials: true,
-          params: {
-            userId: userid,
-            itemId: itemid,
-          },
-        }
-      );
-      console.log("updated user in delete item: ", response.data.updatedUser);
+      const response = await DeleteCartItem(userid, itemid);
       const newPickedCartItem = [...pickedItem];
       newPickedCartItem[deletedId] = 0;
       setPickedItem(newPickedCartItem);
       dispatch(updateUserInformation(response.data.updatedUser));
-      setRender(render + 1);
+      setLocalUser(response.data.updatedUser);
     } catch (error) {
       console.log("error from deleting cart item!", error);
     }
@@ -93,25 +85,12 @@ const Cart = () => {
 
   const handleModifyQuantity = async (index, type, itemId) => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = JSON.parse(localStorage.getItem("User"));
       console.log("user id: ", user);
       if (!user || !user._id) {
         throw new Error("User not found in localStorage");
       }
-      const newCartItem = await axios.post(
-        "http://localhost:8000/api/v1/user/update-cart",
-        {},
-        {
-          withCredentials: true,
-          params: {
-            index,
-            type,
-            id: user._id,
-            itemId,
-          },
-        }
-      );
-      console.log("newCartItem: ", newCartItem);
+      const newCartItem = await ModifyQuantity(index, type, itemId, user);
       if (isChecked[index]) {
         const newPickedCartItems = [...pickedItem];
         const { price, quantity } =
@@ -120,7 +99,7 @@ const Cart = () => {
         setPickedItem(newPickedCartItems);
       }
       dispatch(updateUserInformation(newCartItem.data.updatedUser));
-      setLocalStorageItem("user", newCartItem.data.updatedUser);
+      setLocalStorageItem("User", newCartItem.data.updatedUser);
       setRender(render + 1);
     } catch (error) {
       console.log("error in update cart: ", error);
@@ -276,22 +255,13 @@ const Cart = () => {
           }
         });
         console.log("pickedItemArr: ", pickedItemArr);
-        const response = await axios.post(
-          "http://localhost:8000/api/v1/user/delete-items",
-          {
-            userId: userId,
-            itemIds: pickedItemArr,
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("updated user in delete item: ", response);
-
+        const response = await PickedItem(userId, pickedItemArr);
+        console.log("response in delete Picked item: ", response);
         setLocalStorageItem("user", response.data.updatedUser);
         setIsChecked(
           new Array(Cart.length - pickedIndexItem.length).fill(false)
         );
+        setIsAllChecked(false);
         setPickedItem(new Array(Cart.length - pickedIndexItem.length).fill(0));
       } catch (error) {
         console.log("error from handle delete picked item: ", error);
@@ -320,21 +290,12 @@ const Cart = () => {
         }
       });
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/v1/user/buy",
-          {
-            userId,
-            itemIds: pickedItemArr,
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("response in handleBuy: ", response);
-        setLocalStorageItem("user", response.data.updatedUser);
+        const response = await BuyItem(pickedItemArr, userId);
+        setLocalStorageItem("User", response.data.updatedUser);
         setIsChecked(
           new Array(Cart.length - pickedIndexItem.length).fill(false)
         );
+        setIsAllChecked(false);
         setPickedItem(new Array(Cart.length - pickedIndexItem.length).fill(0));
       } catch (error) {
         console.log("error in handleBuy: ", error);

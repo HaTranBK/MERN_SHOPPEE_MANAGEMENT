@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "antd";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { updateIsLogIn, userState } from "../../redux/userReducer";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateIsLogIn } from "../../redux/userReducer";
 import { removeLocalStorageItem } from "../../utils/localStorage";
+import { DeleteOutlined } from "@ant-design/icons";
+import { LogOut } from "../../service/userAPICallClient";
 const CustomModal = ({
   reason,
   contents,
@@ -13,16 +15,18 @@ const CustomModal = ({
   buttonName = "",
   userId = "",
   itemId = "",
+  popupDeleteAdminProduct = "",
 }) => {
   let timeOutLogin, timeOutnavigate;
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const showModal = () => {
     setOpen(true);
   };
-
+  // console.log("popupdelete admin: ", popupDeleteAdminProduct);
   const handleOk = () => {
     setLoading(true);
     setTimeout(() => {
@@ -45,6 +49,13 @@ const CustomModal = ({
   const handleClick = () => {
     if (type === "logout") handleLogout();
     else if (type === "delCartItem") handleDeleteCartItem(itemId, userId);
+    else if (type === "delProductAdmin") {
+      handleDeleteCartItem(itemId);
+      setOpen(false);
+    } else if (type === "delAdmin") {
+      handleDeleteCartItem(itemId);
+      setOpen(false);
+    }
   };
 
   const buttonOpenModal = () => {
@@ -59,16 +70,11 @@ const CustomModal = ({
       console.log("ban dang vao handlelogout!");
       //lưu ý với post: là tham số thứ 2 là data, nếu không muốn truyền data gì thì phải để object rỗng, sau đó đó tham số thứ ba.
       //withCredentials:true là đính kèm và nhận cookie trong request.
-      const rep = await axios.post(
-        "http://localhost:8000/api/v1/user/logout-user",
-        {},
-        { withCredentials: true }
-      );
-      console.log("Log out successfully: ", rep);
+      await LogOut();
       handleCancel();
       removeLocalStorageItem("userToken");
-      removeLocalStorageItem("user");
-      timeOutLogin = setTimeout(() => dispatch(updateIsLogIn(false)), 1000);
+      removeLocalStorageItem("User");
+      dispatch(updateIsLogIn(false));
       timeOutnavigate = setTimeout(
         () => navigate("/pre-process/sign/signin"),
         2000
@@ -80,7 +86,11 @@ const CustomModal = ({
   return (
     <>
       <span type="primary" onClick={showModal} className={buttonOpenModal()}>
-        {buttonName}
+        {popupDeleteAdminProduct === true ? (
+          <Button icon={<DeleteOutlined />} />
+        ) : (
+          buttonName
+        )}
       </span>
       <Modal
         open={open}
@@ -91,13 +101,14 @@ const CustomModal = ({
           <Button key="back" onClick={handleCancel}>
             Return
           </Button>,
-          <button
-            className=" ms-3 px-3 py-2 text-white bg-orange-600 rounded-md hover:bg-orange-500"
+          <span
+            className="px-3 py-2 text-white bg-orange-600 rounded-md hover:bg-orange-500 inline-block cursor-pointer"
             onClick={() => handleClick()}
+            style={{ backgroundColor: "orange" }}
             key={"2"}
           >
             {reason}
-          </button>,
+          </span>,
         ]}
       >
         <p>{contents}</p>

@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Table } from "antd";
-import axios from "axios";
-import ColumnGroup from "antd/es/table/ColumnGroup";
-import EditProductForm from "../EditForm/EditProductForm";
+import { Table } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import { getAdminProducts } from "../../service/APICall";
+import CustomModal from "../CustomModal/CustomModal";
+import DeletePopup from "../../../../client/shoppee-project/src/component/Modal/Modal";
+import {
+  addnewAdminProduct,
+  deleteAdminProduct,
+  updateAdminProduct,
+} from "../../service/AdminProductAPICall";
+
 const ProductList = () => {
   const democss = "bg-orange-500 text-white";
   const [products, setProducts] = useState([]);
-  let data = [];
+  //Không nên dderer biến data như này, đưa vào state để re render.
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [updatedFields, setUpdatedFields] = useState({});
   const [newProduct, setNewProduct] = useState({});
-  const [passedDataProduct, setPassedDataProduct] = useState({});
+
   const columns = [
     {
       title: "Category",
@@ -76,9 +84,51 @@ const ProductList = () => {
       title: "Quantity",
       dataIndex: "quantity",
     },
-    // FIX: Add more column actions for "edit", delete, view detail of table's row
+    ,
+    // FIX: Add more column actions for "edit", delete, view detail of table's row  (Updated)
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <span>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => handleEditClick(record)}
+          />
+          <DeletePopup
+            reason={"Xoá sản phẩm"}
+            contents={"Bạn có chắc muốn xóa sản phẩm này !"}
+            type={"delProductAdmin"}
+            handleDeleteCartItem={handleDeleteProduct}
+            itemId={record._id}
+            popupDeleteAdminProduct={true}
+            style={{ marginLeft: 8 }}
+          />
+        </span>
+      ),
+    },
   ];
 
+  const handleEditClick = (record) => {
+    setOpen(true);
+    setUpdatedFields(record);
+    console.log("record in handleEditClick: ", record);
+  };
+
+  // const handleDeleteClick = (record) => {
+  //   console.log("vaof handle delete click", record._id);
+
+  //   return (
+  //     <DeletePopup
+  //       reason={"Xoá sản phẩm"}
+  //       contents={"Bạn có chắc muốn xóa sản phẩm này !"}
+  //       type={"delProductAdmin"}
+  //       // handleDeleteCartItem={handleDeleteProduct}
+  //       itemId={record._id}
+  //       popupDeleteAdminProduct="true"
+  //     />
+  //   );
+  // };
   const handleCancel = () => {
     setOpen(false);
   };
@@ -97,14 +147,7 @@ const ProductList = () => {
     // setLoading(true);
     try {
       console.log("newProduct: ", newProduct);
-      const responseNewProduct = await axios.post(
-        "http://localhost:8000/api/v1/adproduct/add-adminproduct",
-        {
-          newProduct,
-        }
-      );
-
-      console.log("newProduct: ", responseNewProduct);
+      await addnewAdminProduct(newProduct);
       setNewProduct({});
       fetchProduct();
       setTimeout(() => {
@@ -121,23 +164,13 @@ const ProductList = () => {
     setOpenAdd(false);
   };
 
-  const PassesDataTable = () => {
-    products.forEach((item) => {
-      const { name, price, category, quantity, thumb } = item;
-      data.push({ name, price, category: category[0], quantity, thumb });
-    });
-  };
-
   const onChange = (pagination, filters, sorter, extra) => {
     console.log("params", pagination, filters, sorter, extra);
   };
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/adproduct/get-adminproducts"
-      );
-      console.log("response in product list: ", response);
+      const response = await getAdminProducts();
       setProducts(response.data.AllAdminProducts);
     } catch (error) {
       console.log("error from get all Products: ", error);
@@ -149,27 +182,12 @@ const ProductList = () => {
   }, []);
 
   const renderProductList = () => {
-    PassesDataTable();
     return (
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={products}
         onChange={onChange}
         className="me-5"
-        // FIX
-        onRow={(record, rowIndex) => {
-          // console.log("record - rowIndex: ", record, rowIndex);
-          return {
-            onClick: (event) => {
-              const newRecord = { ...record, rowIndex };
-              // console.log("newRecord: ", newRecord);
-              // console.log("record - rowIndex: ", record, rowIndex);
-              setOpen(true);
-              setUpdatedFields(newRecord);
-              // console.log("event", event);
-            }, // click row
-          };
-        }}
       />
     );
   };
@@ -181,28 +199,19 @@ const ProductList = () => {
       // const newState = JSON.parse(JSON.stringify(oldState));
       const update = {
         ...updatedFields,
-        _id: products[updatedFields.rowIndex]._id,
       };
       // console.log("update: ", update);
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/adproduct/update-adminproduct",
-        { update }
-      );
-      console.log("response in handle update product: ", response);
+      await updateAdminProduct(update);
       fetchProduct();
     } catch (error) {
       console.log("error from handle update admin product: ", error);
     }
   };
 
-  const handleDeleteProduct = async () => {
+  const handleDeleteProduct = async (_id) => {
     try {
-      const _id = products[updatedFields.rowIndex]._id;
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/adproduct/delete-adminproduct",
-        { _id }
-      );
-      console.log("response in handle delete admin product: ", response);
+      console.log("_id in delete product: ", _id);
+      await deleteAdminProduct(_id);
       setUpdatedFields({});
       setTimeout(() => setOpen(false), 1000);
       setTimeout(() => fetchProduct(), 1500);
@@ -226,71 +235,29 @@ const ProductList = () => {
         </span>
       </div>
       <div>{renderProductList()}</div>
-      <Modal
+
+      <CustomModal
         open={open}
-        title="Edit Product Information"
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={[
-          <button
-            onClick={handleCancel}
-            className="px-3 py-2 bg-gray-200 me-3 rounded-md hover:bg-gray-300"
-          >
-            Return
-          </button>,
-          <button
-            onClick={handleDeleteProduct}
-            className="px-3 py-2 bg-red-500 me-3 rounded-md hover:bg-red-400"
-          >
-            Delete This Product
-          </button>,
-          <button
-            key="submit"
-            loading={loading}
-            onClick={handleOk}
-            className="bg-orange-500 text-white hover:bg-orange-400 px-4 py-2 rounded-md "
-          >
-            Complete Updating
-          </button>,
-        ]}
-      >
-        <div>
-          <EditProductForm
-            passedDataProduct={updatedFields}
-            setPassedDataProduct={setUpdatedFields}
-          />
-        </div>
-      </Modal>
-      {/* FIX: Write a custome model*/}
-      <Modal
+        title={"Edit Product Information"}
+        handleCancel={handleCancel}
+        handleOk={handleOk}
+        typeModal="Complete Updating"
+        typeContent="product"
+        content={updatedFields}
+        setContent={setUpdatedFields}
+      />
+
+      {/* FIX: Write a custome model (Updated)*/}
+      <CustomModal
         open={openAdd}
         title="Add Product"
-        onOk={handleOkAdd}
-        onCancel={handleCancelAdd}
-        footer={[
-          <button
-            onClick={handleCancelAdd}
-            className="px-3 py-2 bg-gray-200 me-3 rounded-md hover:bg-gray-300"
-          >
-            Return
-          </button>,
-          <button
-            key="submit"
-            loading={loading}
-            onClick={handleOkAdd}
-            className="bg-orange-500 text-white hover:bg-orange-400 px-4 py-2 rounded-md "
-          >
-            ADD
-          </button>,
-        ]}
-      >
-        <div>
-          <EditProductForm
-            passedDataProduct={newProduct}
-            setPassedDataProduct={setNewProduct}
-          />
-        </div>
-      </Modal>
+        handleCancel={handleCancelAdd}
+        handleOk={handleOkAdd}
+        typeModal="ADD"
+        typeContent="product"
+        content={newProduct}
+        setContent={setNewProduct}
+      />
     </div>
   );
 };

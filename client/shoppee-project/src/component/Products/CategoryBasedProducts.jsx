@@ -7,6 +7,7 @@ import DetailItem from "../Item/DetailItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { getCategoriedData } from "../../service/ProductAPICallClient";
 
 const CategoryBasedProducts = ({ pathname }) => {
   console.log("category name: ", pathname);
@@ -60,16 +61,7 @@ const CategoryBasedProducts = ({ pathname }) => {
 
   const CategoriedData = async () => {
     try {
-      const Categoriedata = await axios.get(
-        "http://localhost:8000/api/v1/products/get-category",
-        {
-          params: {
-            category: pathname,
-          },
-          withCredentials: true,
-        }
-      );
-      console.log("categoried data: ", Categoriedata);
+      const Categoriedata = await getCategoriedData(pathname);
       setCategoryProducts(Categoriedata.data.category[0]);
     } catch (error) {
       console.log("error from getting categoried data: ", error);

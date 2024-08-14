@@ -10,6 +10,8 @@ import Camera from "../../assets/images/camera.jpg";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { productsState, updateAllproducts } from "../../redux/productsReducer";
+import { getCategory } from "../../service/ProductAPICallClient.js";
+
 const Categories = () => {
   const dispatch = useDispatch();
   const { products } = useSelector(productsState);
@@ -19,18 +21,9 @@ const Categories = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/products/get-products",
-          { withCredentials: true }
-        );
-        console.log(
-          "getting all products on client side successfully: ",
-          response
-        );
+        const response = await getCategory();
         notifySuccess(response.data.message);
-
         dispatch(updateAllproducts(response.data.productsFromData));
-        console.log("categories: ", response);
       } catch (error) {
         // notifyError(error.response.data.message);
         console.log(
