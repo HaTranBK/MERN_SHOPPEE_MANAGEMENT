@@ -88,10 +88,7 @@ const Cart = () => {
       setPickedItem(newPickedCartItem);
       dispatch(updateUserInformation(response.data.updatedUser));
       setLocalUser(response.data.updatedUser);
-<<<<<<< HEAD
       setCart(response.data.updatedUser.cartItems);
-=======
->>>>>>> 2a27bdd5a308916ff392986025f26c6421680e1f
     } catch (error) {
       console.log("error from deleting cart item!", error);
     }
@@ -114,10 +111,7 @@ const Cart = () => {
       }
       dispatch(updateUserInformation(newCartItem.data.updatedUser));
       setLocalStorageItem("User", newCartItem.data.updatedUser);
-<<<<<<< HEAD
       setCart(newCartItem.data.updatedUser.cartItems);
-=======
->>>>>>> 2a27bdd5a308916ff392986025f26c6421680e1f
       setRender(render + 1);
     } catch (error) {
       console.log("error in update cart: ", error);
@@ -163,11 +157,7 @@ const Cart = () => {
     });
     return count.length;
   };
-<<<<<<< HEAD
   console.log("cart: ", Cart);
-=======
-
->>>>>>> 2a27bdd5a308916ff392986025f26c6421680e1f
   const renderCartItems = () => {
     return Cart.map((item, index) => {
       return (

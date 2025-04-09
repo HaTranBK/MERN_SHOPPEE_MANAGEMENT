@@ -10,10 +10,7 @@ import { productsState, updateInforItem } from "../../redux/productsReducer";
 import { useNavigate } from "react-router-dom";
 import { getProduct } from "../../service/ProductAPICallClient.js";
 import { addCartItem } from "../../service/CartAPICallClient.js";
-<<<<<<< HEAD
 import { setLocalStorageItem } from "../../utils/localStorage.js";
-=======
->>>>>>> 2a27bdd5a308916ff392986025f26c6421680e1f
 const ItemInfor = ({ pathname }) => {
   const { inforItem } = useSelector(productsState);
   const dispatch = useDispatch();
