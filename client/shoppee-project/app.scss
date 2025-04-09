@@ -1,0 +1,273 @@
+.container_ {
+  width: 1150px;
+  margin: 0 auto;
+}
+//---------------SIGN_UP FORM------------//
+.parentForm {
+  background-color: orangered;
+  .signUp_text {
+    .icon_shoppe {
+      font-size: 180px;
+    }
+  }
+  .form-container {
+    // background-color: transparent;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    .form_title {
+      h1 {
+        font-size: 28px;
+      }
+    }
+    form {
+      padding: 10px 0px;
+      .password_form {
+        position: relative;
+        .exposed_password {
+          position: absolute;
+          right: 10px;
+          top: 40%;
+          color: rgb(185, 182, 177);
+        }
+      }
+    }
+  }
+}
+
+//-------------HEADER COMPONENT------------//
+//--------------HEADERCART------------------
+.headerCart-Top {
+  background-color: #ee4d2d;
+  .header_cart_container {
+    .headerCart-Top-left {
+    }
+  }
+}
+.headerCart-Bottom {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+}
+//-------------FOOTER COMPONENT------------//
+footer {
+  font-size: 14px;
+  .item {
+    .list {
+      li {
+        // display: inline-block;
+        a {
+          &:hover {
+            color: orangered;
+          }
+          display: inline-block;
+          padding-bottom: 9px;
+          font-size: 13px;
+          transition: all 0.3s;
+        }
+      }
+    }
+  }
+  .item_pay {
+    img {
+      width: 100%;
+      padding: 12px;
+      box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+        rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    }
+  }
+  .download_item {
+    .download_detailed_item {
+      img {
+        padding: 3px;
+        box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+      }
+    }
+  }
+}
+
+//-------------SIGNIN---------------
+.signInContainer {
+  .signin_title {
+    position: relative;
+    &::before {
+      content: "";
+      height: 2px;
+      width: 100%;
+      border-bottom: 2px solid #ef4444;
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+    }
+  }
+  form {
+    position: relative;
+    .password_container {
+      position: relative;
+      .show_password {
+        position: absolute;
+        top: 35%;
+        right: 10px;
+        color: rgb(185, 182, 177);
+      }
+    }
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: -75%;
+      border-bottom: 1px solid rgb(185, 182, 177);
+      width: 70%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+//--------------HEADER_HOME---------------
+.header_home {
+  width: 1150px;
+  margin: 0 auto;
+  .bottom_header {
+    .searchContainer {
+      position: relative;
+      input {
+        &:focus-visible {
+          border-color: #ef4444;
+        }
+      }
+      .search_icon {
+        position: absolute;
+        right: 10px;
+        top: 7%;
+        padding: 5px 18px;
+        background-color: #fb5730;
+        color: white;
+      }
+    }
+    .wrapperCart {
+      position: relative;
+      // &:hover {
+      //   .popover_cart {
+      //     display: inline-block;
+      //   }
+      // }
+      .CartShoppingContainer {
+        position: relative;
+        .icon_shoppingCart {
+        }
+        .numberItemCart {
+          position: absolute;
+          right: -10px;
+          top: -10px;
+          border-radius: 50%;
+          background-color: white;
+          line-height: 17px;
+          border: 1px solid orangered;
+          font-size: 14px;
+          width: 21px;
+          height: 21px;
+        }
+      }
+      .popover_cart {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 35px;
+        width: 400px;
+        height: 400px;
+        z-index: 1000;
+        .triangle-up {
+          position: absolute;
+          right: 5px;
+          top: -9px;
+          width: 0;
+          height: 0;
+          border-left: 6px solid #fb5730;
+          border-right: 6px solid #fb5730;
+          border-bottom: 10px solid white;
+        }
+      }
+    }
+  }
+}
+
+//-------------CATEGORIES-------------
+.item_category {
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  img {
+    &:hover {
+      transform: translateY(-10px);
+    }
+  }
+}
+
+//-----------------PRODUCTS------------
+.products {
+  .detail_item {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    .price {
+      font-size: 14px;
+    }
+    border: 2px solid gray;
+    transition: all 0.3s;
+    .infor_item {
+      .nameItem {
+        transition: all 0.3s;
+        &:hover {
+          color: #288ad6;
+        }
+      }
+    }
+    &:hover {
+      transform: translateY(-5px);
+      border-color: #fb5730;
+    }
+  }
+}
+
+//-----------------CATEGORYBASEDPRODUCTS----------
+.filterBar {
+  .price_sort {
+    position: relative;
+    &:hover {
+      .sort_options {
+        display: inline-block;
+      }
+      .arrow_icon {
+        transform: rotate(90deg);
+      }
+    }
+    .sort_options {
+      position: absolute;
+      bottom: -228%;
+      left: 0;
+      display: none;
+      padding-top: 10px;
+      .item_list-border {
+      }
+    }
+  }
+}
+
+//------------ITEMINFOR----------------
+.btn_cart {
+  background-color: #ffeee8;
+  border: 1px solid orangered;
+  &:hover {
+    background-color: #ffeee8ad;
+  }
+}
+
+//-----------SHOPPING_CART-------------
+.ant-popover {
+  inset: 164px 370px auto auto;
+  .ant-popover-arrow {
+    width: 18px !important;
+    height: 18px !important;
+    right: 5px !important;
+  }
+}
+
+//-------------EMPTY_CART-------
+.empty_cart {
+  background-image: url("	https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/cart/9bdd8040b334d31946f4.png");
+  background-size: contain;
+  background-position: center;
+}

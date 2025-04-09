@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+p {
+  margin-bottom: 0;
+}
+.custom-popover-cart .ant-popover-content {
+  width: 400px;
+}
+
+.border_item_cart {
+  border-bottom: 1px solid rgb(228, 216, 216);
+}

@@ -1,0 +1,7 @@
+server/config/cfg.env
+
+server/node_modules
+
+client/shoppee-project/node_modules
+
+admin/node_modules
